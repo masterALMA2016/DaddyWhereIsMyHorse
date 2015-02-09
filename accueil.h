@@ -6,6 +6,10 @@
 #include <QLabel>
 #include <QFrame>
 #include <QPushButton>
+#include <QPixmap>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QScrollArea>
 #include "mainwindow.h"
 
 class Accueil : public QMainWindow
@@ -19,6 +23,7 @@ public slots:
     void ouvrir_projet();
 
 private:
+    QWidget *ma;
     int longueur;
     int largeur;
     //Pour la "fenetre" d'accueil
@@ -26,7 +31,7 @@ private:
     QPushButton *nouveau_projet;
     QLabel *label;
     MainWindow *mainWindow;
-
+    QVBoxLayout *layout;
     //Pour la fenetre de projet
 };
 
