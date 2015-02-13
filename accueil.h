@@ -10,28 +10,32 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QScrollArea>
-#include "mainwindow.h"
+#include <QMenu>
+#include <QMenuBar>
+#include "dessin.h"
 
 class Accueil : public QMainWindow
 {
     Q_OBJECT
+
 public:
     explicit Accueil(QWidget *parent = 0);
     ~Accueil();
+       void projet();
 
 public slots:
     void ouvrir_projet();
+    void dessin(int x, int y);
 
 private:
-    QWidget *ma;
+    Dessin *d;
     int longueur;
     int largeur;
     //Pour la "fenetre" d'accueil
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
     QLabel *label;
-    MainWindow *mainWindow;
-    QVBoxLayout *layout;
+
     //Pour la fenetre de projet
 };
 

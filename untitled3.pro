@@ -14,9 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    accueil.cpp
+    accueil.cpp \
+    projet.cpp \
+    imageclickable.cpp \
+    dessin.cpp
 
 HEADERS  += mainwindow.h \
-    accueil.h
+    accueil.h \
+    projet.h \
+    imageclickable.h \
+    dessin.h
 
 FORMS    +=
