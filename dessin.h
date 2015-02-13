@@ -23,7 +23,7 @@ protected:
 
 private:
     QPixmap dessin;
-    bool trace = false;
+    bool trace;
     int x;
     int y;
 

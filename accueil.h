@@ -10,9 +10,6 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QScrollArea>
-#include <QMenu>
-#include <QMenuBar>
-#include "dessin.h"
 
 class Accueil : public QMainWindow
 {
@@ -25,10 +22,8 @@ public:
 
 public slots:
     void ouvrir_projet();
-    void dessin(int x, int y);
 
 private:
-    Dessin *d;
     int longueur;
     int largeur;
     //Pour la "fenetre" d'accueil

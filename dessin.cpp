@@ -5,7 +5,7 @@
 
 Dessin::Dessin(QWidget * parent):QLabel(parent), dessin(200, 200)
 {
-    dessin.fill(Qt::transparent);
+  //  dessin.fill(Qt::transparent);
     setPixmap(dessin);
     trace = false;
 }

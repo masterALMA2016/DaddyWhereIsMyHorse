@@ -1,5 +1,5 @@
 #include "imageclickable.h"
-
+#include <iostream>
 ImageClickable::ImageClickable(std::string s, QWidget *parent):QLabel(parent)
 {
     path=s;
@@ -13,6 +13,7 @@ ImageClickable::~ImageClickable()
 }
 
 void ImageClickable::mousePressEvent ( QMouseEvent * event ){
+    std::cout<<"jjjjjj"<<std::endl;
     emit clicked(this->path);
 }
 

@@ -15,6 +15,8 @@
 #include <string>
 #include <QMenuBar>
 #include <QMenu>
+#include "dessin.h"
+
 class Projet: public QMainWindow
 {
 
@@ -24,9 +26,11 @@ public:
     ~Projet();
 
 public slots:
-    void test(std::string s);
+    void dessin(int x, int y);
 
 private:
+    Dessin *d;
+
     int longueur;
     int largeur;
     QMenuBar *barre_menu;

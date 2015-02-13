@@ -22,6 +22,10 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
 connect(ac, SIGNAL(triggered()), this, SLOT(close()));
     fichier->addAction(ac);
 
+    d = new Dessin(this);
+    d->setGeometry(500, 500,200,200);
+
+
     QPushButton *couleur = new QPushButton(this);
     couleur->setObjectName(QString::fromUtf8("couleur"));
     couleur->setGeometry(longueur-100, barre_menu->geometry().height() ,40 ,30);
@@ -37,8 +41,7 @@ connect(ac, SIGNAL(triggered()), this, SLOT(close()));
    // label1->setPixmap( p );
 
     ImageClickable *label2=new ImageClickable(s2);
-    test2 = new QLabel(this);
-    test2->setGeometry(200, 200, 1000, 500);
+
     label2->setPixmap(p);
     ImageClickable *label3=new ImageClickable(s2);
     label3->setPixmap( p);
@@ -79,9 +82,8 @@ connect(ac, SIGNAL(triggered()), this, SLOT(close()));
     ma = new QWidget(this);
     ma->setLayout(test);
     scrollarea->setWidget(ma);
-    std::cout<<barre_menu->geometry().y()<<"      "<<barre_menu->height()<<std::endl;
     scrollarea->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur-barre_menu->geometry().height());
-    label1->installEventFilter(this);
+
     connect(label1, SIGNAL(clicked(std::string)), this, SLOT(test(std::string)));
 }
 
@@ -90,13 +92,8 @@ Projet::~Projet()
 
 }
 
-void Projet::test(std::string s){
-    std::cout<<"hhh:   "<<s<<std::endl;
 
-    QPixmap p( s.c_str() );
-    p= p.scaledToWidth(1000,  Qt::FastTransformation);
-        test2->setPixmap(p);
 
-       std::cout<<s<<std::endl;
-
+void Projet::dessin(int x, int y){
+std::cout<<"fgvhjvhkbmkhbl"<<std::endl;
 }

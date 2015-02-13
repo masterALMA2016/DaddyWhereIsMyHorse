@@ -2,10 +2,7 @@
 #include <QVBoxLayout>
 #include <iostream>
 #include "projet.h"
-#include <QAction>
-#include <QPixmap>
-#include <QPainter>
-#include <QPen>
+
 
 Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 {
@@ -14,17 +11,6 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     this->setWindowTitle("Accueil");
     this->setMinimumSize(longueur,largeur);
     this->setMaximumSize(longueur,largeur);
-
-  //  QLabel *lab=new QLabel(this);
-
-    //lab->setPixmap(pix);
-    //lab->setGeometry(0,0,200,200);
-
-
-    d = new Dessin(this);
-    d->setGeometry(0,0,200,200);
-    d->setFocus();
-    connect(d, SIGNAL(clicked(int, int)), this, SLOT(dessin(int, int)));
 
 
     label = new QLabel(this);
@@ -61,6 +47,3 @@ void Accueil::projet(){
     this->close();
 }
 
-void Accueil::dessin(int x, int y){
-
-}
