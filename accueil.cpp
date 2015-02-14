@@ -2,8 +2,8 @@
 #include <QVBoxLayout>
 #include <iostream>
 #include "projet.h"
-
-
+#include <QDir>
+#include <creationprojet.h>
 Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 {
     longueur_fenetre = 1245;
@@ -26,6 +26,7 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
+
 }
 
 Accueil::~Accueil()
@@ -34,15 +35,28 @@ Accueil::~Accueil()
 
 void Accueil::creer_projet(){
 
+    CreationProjet *cp = new CreationProjet(this);
+    connect(cp, SIGNAL(information_projet(std::string,std::string,std::string,std::string)), this, SLOT(recuperer_informations(std::string, std::string , std::string , std::string )));
+
+    cp->show();
+    QDir dd =QDir::home();
+    QString ss = dd.path();
+    std::cout<<ss.toStdString()<<std::endl;
+
+
+
+}
+
+void Accueil::ouvrir_projet(){
+
+}
+
+void Accueil::recuperer_informations(std::string nom_projet, std::string chemin_projet, std::string chemin_video, std::string frequence){
+    std::cout<<nom_projet<<"    "<<chemin_projet<<"   "<<chemin_video<<"     "<<frequence<<std::endl;
     delete(charger_projet);
     delete(nouveau_projet);
     delete(message_accueil);
     Projet *projet = new Projet(longueur_fenetre, largeur_fenetre);
     projet->show();
     this->close();
-
-}
-
-void Accueil::ouvrir_projet(){
-
 }

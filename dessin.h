@@ -13,6 +13,7 @@ public:
     explicit Dessin(QWidget * parent=0);
     ~Dessin();
     void set_color(QColor couleur);
+    QColor get_color();
 
 signals:
     void clicked(int x, int y);

@@ -35,6 +35,7 @@ public:
 
 public slots:
     void changer_couleur();
+    void couleur_choisie(QColor nouvelle_couleur);
 
 private:
 

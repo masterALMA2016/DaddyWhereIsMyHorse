@@ -2,7 +2,7 @@
 #include <QCursor>
 #include <QMouseEvent>
 #include <iostream>
-
+#include <QDir>
 Dessin::Dessin(QWidget * parent):QLabel(parent), dessin(200, 200), crayon(Qt::blue)
 {
     dessin.fill(Qt::transparent);
@@ -24,6 +24,9 @@ void Dessin::mousePressEvent ( QMouseEvent * event ){
     trace = true;
     paint.drawPoint(event->x(), event->y());
     setPixmap(dessin);
+
+    dessin.save("$HOME");
+
 }
 
 void Dessin::mouseMoveEvent( QMouseEvent * event ){
@@ -44,4 +47,8 @@ void Dessin::mouseReleaseEvent(QMouseEvent *event){
 
 void Dessin::set_color(QColor couleur){
     crayon.setColor(couleur);
+}
+
+QColor Dessin::get_color(){
+    return crayon.color();
 }

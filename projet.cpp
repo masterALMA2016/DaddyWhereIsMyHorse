@@ -75,7 +75,15 @@ Projet::~Projet()
 }
 
 void Projet::changer_couleur(){
-        QColor col = QColorDialog::getColor(Qt::black, this, "Select Color");
-        couleur->setStyleSheet("background-color:"+col.name()+";");
-        dessin_courant->set_color(col);
+        QColor col;
+        QColorDialog *qd = new QColorDialog(this);
+        qd->setModal(true);
+        connect(qd, SIGNAL(colorSelected(QColor)), this, SLOT(couleur_choisie(QColor)));
+        qd->open();
+
+}
+
+void Projet::couleur_choisie(QColor nouvelle_couleur){
+    couleur->setStyleSheet("background-color:"+nouvelle_couleur.name()+";");
+    dessin_courant->set_color(nouvelle_couleur);
 }

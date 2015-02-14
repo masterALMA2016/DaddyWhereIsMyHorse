@@ -22,6 +22,7 @@ public:
 public slots:
     void ouvrir_projet();
     void creer_projet();
+    void recuperer_informations(std::string nom_projet, std::string chemin_projet, std::string chemin_video, std::string frequence);
 
 private:
 
