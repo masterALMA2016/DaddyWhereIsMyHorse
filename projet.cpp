@@ -1,12 +1,15 @@
 #include "projet.h"
-#include <iostream>
-#include <QEvent>
-#include <QDockWidget>
-#include <QPainter>
+
 Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
 {
-    longueur=x;
-    largeur=y;
+    //parametrage fenetre
+    longueur_fenetre = x;
+    largeur_fenetre = y;
+
+    this->setWindowTitle("Projet");
+    this->setMinimumSize(longueur_fenetre,largeur_fenetre);
+    this->setMaximumSize(longueur_fenetre,largeur_fenetre);
+
 
 
 
@@ -18,73 +21,52 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     QAction *ac = new QAction(this);
     ac->setText(QString::fromUtf8("fermer"));
     ac->setShortcut(QKeySequence("CTRL+Q"));
-
-connect(ac, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ac, SIGNAL(triggered()), this, SLOT(close()));
     fichier->addAction(ac);
 
-    d = new Dessin(this);
-    d->setGeometry(500, 500,200,200);
+    dessin_courant = new Dessin(this);
+    dessin_courant->setGeometry(500, 500,200,200);
+
+    //ajout boutons
+
+    //pour la couleur du crayon
+    couleur = new QPushButton(this);
+    couleur->setGeometry(longueur_fenetre-100, barre_menu->geometry().height() ,40 ,30);
+    connect(couleur, SIGNAL(clicked()), this, SLOT(changer_couleur()));
+
+    //pour utiliser le crayon
+    QPushButton *crayon = new QPushButton(this);
+    crayon->setGeometry(longueur_fenetre-50, barre_menu->geometry().height(), 50, 50);
+    QPixmap icone("../DaddyWhereIsMyHorse/crayon.png");
+    icone = icone.scaledToWidth(40, Qt::FastTransformation);
+    QIcon i(icone);
+    crayon->setIcon(i);
+    crayon->setIconSize(icone.rect().size());
+
+    //pour utiliser la gomme
+    QPushButton *gomme = new QPushButton(this);
+    gomme->setGeometry(longueur_fenetre-150, barre_menu->geometry().height(), 50, 50);
+    QPixmap icone_gomme("../DaddyWhereIsMyHorse/gomme.png");
+    icone_gomme = icone_gomme.scaledToWidth(40, Qt::FastTransformation);
+    QIcon i2(icone_gomme);
+    gomme->setIcon(i2);
+    gomme->setIconSize(icone.rect().size());
+
+    QScrollArea *scrollarea_zone_images = new QScrollArea(this);
+    QVBoxLayout *layout_zone_images = new QVBoxLayout();
 
 
-    QPushButton *couleur = new QPushButton(this);
-    couleur->setObjectName(QString::fromUtf8("couleur"));
-    couleur->setGeometry(longueur-100, barre_menu->geometry().height() ,40 ,30);
-    this->setWindowTitle("Projet");
-    this->setMinimumSize(longueur,largeur);
-    this->setMaximumSize(longueur,largeur);
+    for(int i=0; i<10; i++){
+        ImageClickable *image=new ImageClickable("/home/Soge/Images/Wallpapers/game_of_thrones_016.jpg");
+        layout_zone_images->addWidget(image);
+        mes_images.push_back(image);
+    }
 
-    QPixmap p( "/home/Soge/Images/Wallpapers/game_of_thrones_016.jpg" );
-    p= p.scaledToWidth(160,  Qt::FastTransformation);
+    zone_images = new QWidget(this);
+    zone_images->setLayout(layout_zone_images);
+    scrollarea_zone_images->setWidget(zone_images);
+    scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
 
-    std::string s2="/home/Soge/Images/Wallpapers/game_of_thrones_016.jpg";
-    label1=new ImageClickable(s2);
-   // label1->setPixmap( p );
-
-    ImageClickable *label2=new ImageClickable(s2);
-
-    label2->setPixmap(p);
-    ImageClickable *label3=new ImageClickable(s2);
-    label3->setPixmap( p);
-    ImageClickable *label4=new ImageClickable(s2);
-    label4->setPixmap( p );
-    ImageClickable *label5=new ImageClickable(s2);
-    label5->setPixmap( p );
-    ImageClickable *label6=new ImageClickable(s2);
-    label6->setPixmap( p );
-    ImageClickable *label7=new ImageClickable(s2);
-    label7->setPixmap( p );
-    ImageClickable *label8=new ImageClickable(s2);
-    label8->setPixmap( p );
-    ImageClickable *label9=new ImageClickable(s2);
-    label9->setPixmap( p );
-    ImageClickable *label10=new ImageClickable(s2);
-    label10->setPixmap( p );
-    ImageClickable *label11=new ImageClickable(s2);
-    label11->setPixmap( p );
-    ImageClickable *label12=new ImageClickable(s2);
-    label12->setPixmap( p );
-
-    QScrollArea *scrollarea = new QScrollArea(this);
-
-    QVBoxLayout *test = new QVBoxLayout();
-    test->addWidget(label3);
-    test->addWidget(label2);
-    test->addWidget(label4);
-    test->addWidget(label5);
-    test->addWidget(label6);
-    test->addWidget(label7);
-    test->addWidget(label8);
-    test->addWidget(label9);
-    test->addWidget(label11);
-    test->addWidget(label12);
-    test->addWidget(label10);
-    test->addWidget(label1);
-    ma = new QWidget(this);
-    ma->setLayout(test);
-    scrollarea->setWidget(ma);
-    scrollarea->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur-barre_menu->geometry().height());
-
-    connect(label1, SIGNAL(clicked(std::string)), this, SLOT(test(std::string)));
 }
 
 Projet::~Projet()
@@ -92,8 +74,8 @@ Projet::~Projet()
 
 }
 
-
-
-void Projet::dessin(int x, int y){
-std::cout<<"fgvhjvhkbmkhbl"<<std::endl;
+void Projet::changer_couleur(){
+        QColor col = QColorDialog::getColor(Qt::black, this, "Select Color");
+        couleur->setStyleSheet("background-color:"+col.name()+";");
+        dessin_courant->set_color(col);
 }

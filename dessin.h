@@ -12,6 +12,7 @@ class Dessin: public QLabel
 public:
     explicit Dessin(QWidget * parent=0);
     ~Dessin();
+    void set_color(QColor couleur);
 
 signals:
     void clicked(int x, int y);
@@ -22,6 +23,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent * event);
 
 private:
+    QPen crayon;
     QPixmap dessin;
     bool trace;
     int x;

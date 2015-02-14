@@ -18,20 +18,20 @@ class Accueil : public QMainWindow
 public:
     explicit Accueil(QWidget *parent = 0);
     ~Accueil();
-       void projet();
 
 public slots:
     void ouvrir_projet();
+    void creer_projet();
 
 private:
-    int longueur;
-    int largeur;
-    //Pour la "fenetre" d'accueil
+
+    int longueur_fenetre;
+    int largeur_fenetre;
+
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
-    QLabel *label;
 
-    //Pour la fenetre de projet
+    QLabel *message_accueil;
 };
 
 #endif // ACCUEIL_H

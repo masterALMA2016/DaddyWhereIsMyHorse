@@ -11,33 +11,43 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QObject>
-#include "imageclickable.h"
 #include <string>
 #include <QMenuBar>
 #include <QMenu>
+#include <vector>
+#include <iostream>
+#include <QEvent>
+#include <QDockWidget>
+#include <QPainter>
+#include <QColorDialog>
+#include <QIcon>
 #include "dessin.h"
+#include "imageclickable.h"
 
 class Projet: public QMainWindow
 {
 
     Q_OBJECT
+
 public:
     explicit Projet(int x, int y, QWidget *parent = 0);
     ~Projet();
 
 public slots:
-    void dessin(int x, int y);
+    void changer_couleur();
 
 private:
-    Dessin *d;
 
-    int longueur;
-    int largeur;
+    int longueur_fenetre;
+    int largeur_fenetre;
+
+    Dessin *dessin_courant;
+    QPushButton *couleur;
+
     QMenuBar *barre_menu;
-    ImageClickable *label1;
-    QWidget *ma;
-    QLabel *test2;
 
+    std::vector<ImageClickable*> mes_images;
+    QWidget *zone_images;
 };
 
 #endif // PROJET_H
