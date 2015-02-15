@@ -55,7 +55,6 @@ void Accueil::ouvrir_projet(){
 }
 
 void Accueil::recuperer_informations(std::string nom_projet, std::string chemin_projet, std::string chemin_video, std::string frequence){
-    std::cout<<nom_projet<<"    "<<chemin_projet<<"   "<<chemin_video<<"     "<<frequence<<std::endl;
     delete(charger_projet);
     delete(nouveau_projet);
     delete(message_accueil);
