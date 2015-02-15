@@ -25,7 +25,6 @@ void Dessin::mousePressEvent ( QMouseEvent * event ){
     trace = true;
     paint.drawPoint(event->x(), event->y());
     setPixmap(dessin);
-
 }
 
 void Dessin::mouseMoveEvent( QMouseEvent * event ){
@@ -50,4 +49,8 @@ void Dessin::set_color(QColor couleur){
 
 QColor Dessin::get_color(){
     return crayon.color();
+}
+
+void Dessin::changer_taille_crayon(int i){
+    crayon.setWidth(i);
 }

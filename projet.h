@@ -22,6 +22,7 @@
 #include <QColorDialog>
 #include <QIcon>
 #include <QCheckBox>
+#include <QComboBox>
 #include "dessin.h"
 #include "imageclickable.h"
 
@@ -34,20 +35,24 @@ public:
     explicit Projet(int x, int y, QWidget *parent = 0);
     ~Projet();
 
+
 public slots:
     void changer_couleur();
     void couleur_choisie(QColor nouvelle_couleur);
+    void changer_taille_crayon(int taille);
+    void utiliser_gomme();
+    void utiliser_crayon();
 
 private:
 
     void creation_menu();
-
+    QComboBox *choix_taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
 
     Dessin *dessin_courant;
     QPushButton *couleur;
-
+    QColor couleur_courante;
     //barre de menu
     QMenuBar *barre_menu;
 

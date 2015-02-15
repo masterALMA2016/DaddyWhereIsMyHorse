@@ -14,6 +14,7 @@ public:
     ~Dessin();
     void set_color(QColor couleur);
     QColor get_color();
+    void changer_taille_crayon(int i);
 
 signals:
     void clicked(int x, int y);

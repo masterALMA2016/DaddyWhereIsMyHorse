@@ -1,5 +1,5 @@
 #include "projet.h"
-
+#include <string>
 Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
 {
     //parametrage fenetre
@@ -12,16 +12,7 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
 
     creation_menu();
 
-    //zone de travail
-    QScrollArea *scr = new QScrollArea(this);
 
-
-    dessin_courant = new Dessin(this);
-    dessin_courant->setAlignment(Qt::AlignCenter);
-    dessin_courant->set_color(Qt::black);
-    scr->setWidget(dessin_courant);
-    scr->setAlignment(Qt::AlignCenter);
-    scr->setGeometry(200, 200, 600, 600);
     //ajout boutons
 
 
@@ -42,6 +33,19 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     zone_images->setLayout(layout_zone_images);
     scrollarea_zone_images->setWidget(zone_images);
     scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
+
+
+    //zone de travail
+    QScrollArea *scr = new QScrollArea(this);
+
+
+    dessin_courant = new Dessin(this);
+    dessin_courant->setAlignment(Qt::AlignCenter);
+    dessin_courant->set_color(Qt::black);
+    couleur_courante=Qt::black;
+    scr->setWidget(dessin_courant);
+    scr->setAlignment(Qt::AlignCenter);
+
 
     QCheckBox *afficher_image = new QCheckBox(this);
     afficher_image->setText("Afficher image");
@@ -109,6 +113,8 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     QIcon i(icone);
     crayon->setIcon(i);
     crayon->setIconSize(icone.rect().size());
+    connect(crayon, SIGNAL(clicked()), this, SLOT(utiliser_crayon()));
+
 
     //pour utiliser la gomme
     QPushButton *gomme = new QPushButton(this);
@@ -118,6 +124,34 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     QIcon i2(icone_gomme);
     gomme->setIcon(i2);
     gomme->setIconSize(icone.rect().size());
+    connect(gomme, SIGNAL(clicked()), this, SLOT(utiliser_gomme()));
+
+    dessin_courant->changer_taille_crayon(4);
+
+    choix_taille_crayon = new QComboBox(this);
+
+    int j = 4;
+    int pos=0;
+    while(j<30){
+        QPixmap pp(j,j);
+        pp.fill(Qt::transparent);
+        QPen cc(Qt::black);
+        cc.setCapStyle(Qt::RoundCap);
+        cc.setWidth(j);
+        QPainter pai(&pp);
+        pai.setPen(cc);
+        pai.drawPoint(j/2, j/2);
+        QString s=QString::number(j);
+        choix_taille_crayon->addItem(s);
+        choix_taille_crayon->setItemIcon(pos, pp);
+        pos++;
+        j+=4;
+    }
+    choix_taille_crayon->setIconSize(QSize(50, 50));
+    choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
+    connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon(int)));
+    scr->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+
 }
 
 void Projet::creation_menu(){
@@ -237,4 +271,21 @@ void Projet::changer_couleur(){
 void Projet::couleur_choisie(QColor nouvelle_couleur){
     couleur->setStyleSheet("background-color:"+nouvelle_couleur.name()+";");
     dessin_courant->set_color(nouvelle_couleur);
+    couleur_courante=nouvelle_couleur;
+}
+
+void Projet::changer_taille_crayon(int taille){
+    QString s=choix_taille_crayon->currentText();
+    dessin_courant->changer_taille_crayon(s.toInt());
+}
+
+void Projet::utiliser_gomme(){
+    std::cout<<"ppppp"<<std::endl;
+
+    dessin_courant->set_color(Qt::white);
+}
+
+void Projet::utiliser_crayon(){
+    std::cout<<"tttttt"<<std::endl;
+    dessin_courant->set_color(couleur_courante);
 }
