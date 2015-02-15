@@ -4,6 +4,11 @@
 #include <QDialog>
 #include <string>
 #include <QPushButton>
+#include <QInputDialog>
+#include <QDir>
+#include <QLineEdit>
+#include <QLabel>
+#include <QComboBox>
 
 class CreationProjet: public QDialog
 {

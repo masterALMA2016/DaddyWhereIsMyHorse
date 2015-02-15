@@ -14,15 +14,25 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     this->setMaximumSize(longueur_fenetre,largeur_fenetre);
 
     message_accueil = new QLabel(this);
-    message_accueil->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     message_accueil->setText("Pas de projet ouvert");
-    message_accueil->setGeometry(QRect(500, 350, 150, 20));
+    message_accueil->setStyleSheet("font: 40pt");
+    message_accueil->setGeometry(QRect(420, 300, 480, 80));
+
+    QPixmap image("../DaddyWhereIsMyHorse/lecture.png");
+    image=image.scaledToWidth(20);
+    QIcon icone_bouton(image);
 
     nouveau_projet = new QPushButton("Nouveau projet", this);
-    nouveau_projet->setGeometry(500, 400, 150, 50);
+    nouveau_projet->setGeometry(530, 400, 250, 50);
+    nouveau_projet->setStyleSheet("font: 15pt");
+    nouveau_projet->setIcon(icone_bouton);
+    nouveau_projet->setIconSize(image.rect().size());
 
     charger_projet = new QPushButton("Charger projet", this);
-    charger_projet->setGeometry(500, 450, 150, 50);
+    charger_projet->setGeometry(530, 500, 250, 50);
+    charger_projet->setStyleSheet("font: 15pt");
+    charger_projet->setIcon(icone_bouton);
+    charger_projet->setIconSize(image.rect().size());
 
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
@@ -37,14 +47,7 @@ void Accueil::creer_projet(){
 
     CreationProjet *cp = new CreationProjet(this);
     connect(cp, SIGNAL(information_projet(std::string,std::string,std::string,std::string)), this, SLOT(recuperer_informations(std::string, std::string , std::string , std::string )));
-
     cp->show();
-    QDir dd =QDir::home();
-    QString ss = dd.path();
-    std::cout<<ss.toStdString()<<std::endl;
-
-
-
 }
 
 void Accueil::ouvrir_projet(){

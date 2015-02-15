@@ -4,7 +4,7 @@ ImageClickable::ImageClickable(std::string s, QWidget *parent):QLabel(parent)
 {
     path=s;
     QPixmap p( s.c_str() );
-    p= p.scaledToWidth(160,  Qt::FastTransformation);
+    p = p.scaledToWidth(160,  Qt::FastTransformation);
     this->setPixmap(p);
 }
 
@@ -13,7 +13,6 @@ ImageClickable::~ImageClickable()
 }
 
 void ImageClickable::mousePressEvent ( QMouseEvent * event ){
-    std::cout<<"jjjjjj"<<std::endl;
     emit clicked(this->path);
 }
 

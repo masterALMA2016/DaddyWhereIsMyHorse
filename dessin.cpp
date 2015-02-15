@@ -25,8 +25,6 @@ void Dessin::mousePressEvent ( QMouseEvent * event ){
     paint.drawPoint(event->x(), event->y());
     setPixmap(dessin);
 
-    dessin.save("$HOME");
-
 }
 
 void Dessin::mouseMoveEvent( QMouseEvent * event ){
@@ -36,7 +34,7 @@ void Dessin::mouseMoveEvent( QMouseEvent * event ){
     if(trace){
         paint.drawLine(x, y, event->x(), event->y());
         x = event->x();
-        y=event->y();
+        y = event->y();
         setPixmap(dessin);
     }
 }
