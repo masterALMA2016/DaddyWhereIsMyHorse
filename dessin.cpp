@@ -3,9 +3,10 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <QDir>
-Dessin::Dessin(QWidget * parent):QLabel(parent), dessin(200, 200), crayon(Qt::blue)
+Dessin::Dessin(QWidget * parent):QLabel(parent), dessin(800, 800), crayon(Qt::blue)
 {
     dessin.fill(Qt::transparent);
+    setStyleSheet("background: white");
     crayon.setCapStyle(Qt::RoundCap);
     setPixmap(dessin);
     trace = false;

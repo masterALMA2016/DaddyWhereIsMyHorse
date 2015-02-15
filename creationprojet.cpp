@@ -90,8 +90,6 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   creer->setGeometry(720, 470, 100, 40);
   connect(creer, SIGNAL(clicked()), this, SLOT(envoyer_informations()));
 
-
-
 }
 
 CreationProjet::~CreationProjet()

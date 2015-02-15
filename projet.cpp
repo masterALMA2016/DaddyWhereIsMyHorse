@@ -10,23 +10,19 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     this->setMinimumSize(longueur_fenetre,largeur_fenetre);
     this->setMaximumSize(longueur_fenetre,largeur_fenetre);
 
+   /* creation_menu();
+    QCheckBox *afficher_image = new QCheckBox(this);
+    afficher_image->setText("afficher image");
+    */
+    //zone de travail
+    QScrollArea *scr = new QScrollArea(this);
 
-
-
-    barre_menu = new QMenuBar(this);
-    setMenuBar(barre_menu);
-    barre_menu->setVisible(true);
-    QMenu *fichier = new QMenu("fichier");
-    barre_menu->addMenu(fichier);
-    QAction *ac = new QAction(this);
-    ac->setText(QString::fromUtf8("fermer"));
-    ac->setShortcut(QKeySequence("CTRL+Q"));
-    connect(ac, SIGNAL(triggered()), this, SLOT(close()));
-    fichier->addAction(ac);
 
     dessin_courant = new Dessin(this);
-    dessin_courant->setGeometry(500, 500,200,200);
-
+    dessin_courant->setAlignment(Qt::AlignCenter);
+    scr->setWidget(dessin_courant);
+    scr->setAlignment(Qt::AlignCenter);
+    scr->setGeometry(200, 200, 600, 600);
     //ajout boutons
 
     //pour la couleur du crayon
@@ -66,6 +62,105 @@ Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
     zone_images->setLayout(layout_zone_images);
     scrollarea_zone_images->setWidget(zone_images);
     scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
+
+}
+
+void Projet::creation_menu(){
+    //barre de menu
+    barre_menu = new QMenuBar(this);
+    barre_menu->setVisible(true);
+    setMenuBar(barre_menu);
+
+    //menu fichier
+    fichier = new QMenu("Fichier");
+    barre_menu->addMenu(fichier);
+
+    nouveau = new QAction(this);
+    nouveau->setText(QString::fromUtf8("Nouveau"));
+    nouveau->setShortcut(QKeySequence("CTRL+N"));
+    fichier->addAction(nouveau);
+
+    ouvrir = new QAction(this);
+    ouvrir->setText(QString::fromUtf8("Ouvrir"));
+    ouvrir->setShortcut(QKeySequence("CTRL+O"));
+    fichier->addAction(ouvrir);
+
+    enregistrer = new QAction(this);
+    enregistrer->setText(QString::fromUtf8("Enregistrer"));
+    enregistrer->setShortcut(QKeySequence("CTRL+S"));
+    fichier->addAction(enregistrer);
+
+    exporter_la_video = new QAction(this);
+    exporter_la_video->setText(QString::fromUtf8("Exporter la viéo"));
+    exporter_la_video->setShortcut(QKeySequence("CTRL+V"));
+    fichier->addAction(exporter_la_video);
+
+    exporter_les_images = new QAction(this);
+    exporter_les_images->setText(QString::fromUtf8("Exporter les images"));
+    exporter_les_images->setShortcut(QKeySequence("CTRL+I"));
+    fichier->addAction(exporter_les_images);
+
+    apercu = new QAction(this);
+    apercu->setText(QString::fromUtf8("Aperçu"));
+    apercu->setShortcut(QKeySequence("CTRL+N"));
+    fichier->addAction(apercu);
+
+    //menu edition
+    edition = new QMenu("Edition");
+    barre_menu->addMenu(edition);
+
+    preference = new QAction(this);
+    preference->setText(QString::fromUtf8("Préférences"));
+    preference->setShortcut(QKeySequence("CTRL+P"));
+    edition->addAction(preference);
+
+    edition->addSeparator();
+
+    annuler = new QAction(this);
+    annuler->setText(QString::fromUtf8("Annuler"));
+    annuler->setShortcut(QKeySequence("CTRL+Z"));
+    edition->addAction(annuler);
+
+    afficher_images = new QAction(this);
+    afficher_images->setText(QString::fromUtf8("Afficher images"));
+    afficher_images->setShortcut(QKeySequence("CTRL+1"));
+    edition->addAction(afficher_images);
+
+    afficher_dessins = new QAction(this);
+    afficher_dessins->setText(QString::fromUtf8("Afficher dessins"));
+    afficher_dessins->setShortcut(QKeySequence("CTRL+2"));
+    edition->addAction(afficher_dessins);
+
+    afficher_pelures_doigons = new QAction(this);
+    afficher_pelures_doigons->setText(QString::fromUtf8("Afficher pelures d'oignons"));
+    afficher_pelures_doigons->setShortcut(QKeySequence("CTRL+3"));
+    edition->addAction(afficher_pelures_doigons);
+
+    previsualisation_rapide = new QAction(this);
+    previsualisation_rapide->setText(QString::fromUtf8("Prévisualisation rapide"));
+    previsualisation_rapide->setShortcut(QKeySequence("CTRL+R"));
+    edition->addAction(previsualisation_rapide);
+
+    suivant = new QAction(this);
+    suivant->setText(QString::fromUtf8("Suivant"));
+    suivant->setShortcut(QKeySequence("CTRL+right"));
+    edition->addAction(suivant);
+
+    precedent = new QAction(this);
+    precedent->setText(QString::fromUtf8("Précédent"));
+    precedent->setShortcut(QKeySequence("CTRL+left"));
+    edition->addAction(precedent);
+
+    crayon = new QAction(this);
+    crayon->setText(QString::fromUtf8("Crayon"));
+    crayon->setShortcut(QKeySequence("CTRL+C"));
+    edition->addAction(crayon);
+
+    gomme = new QAction(this);
+    gomme->setText(QString::fromUtf8("Gomme"));
+    gomme->setShortcut(QKeySequence("CTRL+G"));
+    edition->addAction(gomme);
+
 
 }
 

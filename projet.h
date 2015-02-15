@@ -21,6 +21,7 @@
 #include <QPainter>
 #include <QColorDialog>
 #include <QIcon>
+#include <QCheckBox>
 #include "dessin.h"
 #include "imageclickable.h"
 
@@ -39,13 +40,35 @@ public slots:
 
 private:
 
+    void creation_menu();
+
     int longueur_fenetre;
     int largeur_fenetre;
 
     Dessin *dessin_courant;
     QPushButton *couleur;
 
+    //barre de menu
     QMenuBar *barre_menu;
+    QMenu *fichier;
+    QAction *nouveau;
+    QAction *ouvrir;
+    QAction *enregistrer;
+    QAction *exporter_la_video;
+    QAction *exporter_les_images;
+    QAction *apercu;
+
+    QMenu *edition;
+    QAction *preference;
+    QAction *annuler;
+    QAction *afficher_images;
+    QAction *afficher_dessins;
+    QAction *afficher_pelures_doigons;
+    QAction *previsualisation_rapide;
+    QAction *suivant;
+    QAction *precedent;
+    QAction *crayon;
+    QAction *gomme;
 
     std::vector<ImageClickable*> mes_images;
     QWidget *zone_images;
