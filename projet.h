@@ -23,6 +23,7 @@
 #include <QIcon>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDir>
 #include "dessin.h"
 #include "imageclickable.h"
 
@@ -42,22 +43,27 @@ public slots:
     void changer_taille_crayon(int taille);
     void utiliser_gomme();
     void utiliser_crayon();
+    void afficher(std::string path);
 
 private:
 
     void creation_menu();
+    void importer_images();
+
     QComboBox *choix_taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
-    QString frequence;
+    QString frequence_video;
     QString dossier_projet;
     Dessin *dessin_courant;
     QPushButton *couleur;
     QColor couleur_courante;
     //barre de menu
     QMenuBar *barre_menu;
-
+    QLabel *image_fond;
+    QScrollArea *scr;
     std::vector<ImageClickable*> mes_images;
+    QVBoxLayout *layout_zone_images;
     QWidget *zone_images;
 };
 

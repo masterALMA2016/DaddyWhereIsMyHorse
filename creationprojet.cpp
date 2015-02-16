@@ -28,6 +28,13 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   parcourir->setText("Parcourir");
   parcourir->setGeometry(340, 140, 80, 25);
 
+  probleme_chemin_video = new QLabel(this);
+  probleme_chemin_video->setText("Ce répertoire n'existe pas");
+  probleme_chemin_video->setVisible(false);
+  probleme_chemin_video->setGeometry(430,140,170,25);
+  QPalette couleur_texte;
+  couleur_texte.setColor(QPalette::WindowText, Qt::red);
+  probleme_chemin_video->setPalette(couleur_texte);
 
   //Projet
 
@@ -59,6 +66,12 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   nom_projet->setGeometry(130,240,200,25);
   nom_projet->setText(dossier);
 
+  probleme_nom_projet = new QLabel(this);
+  probleme_nom_projet->setText("Ce répertoire existe déjà");
+  probleme_nom_projet->setVisible(false);
+  probleme_nom_projet->setGeometry(340,240,170,25);
+  couleur_texte.setColor(QPalette::WindowText, Qt::red);
+  probleme_nom_projet->setPalette(couleur_texte);
 
   QLabel *emplacement_projet_titre = new QLabel(this);
   emplacement_projet_titre->setText("Emplacement: ");
@@ -72,6 +85,12 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   parcourir_projet->setText("Parcourir");
   parcourir_projet->setGeometry(340, 275, 80, 25);
 
+  probleme_chemin_projet = new QLabel(this);
+  probleme_chemin_projet->setText("Ce répertoire n'existe pas");
+  probleme_chemin_projet->setVisible(false);
+  probleme_chemin_projet->setGeometry(430,275,170,25);
+  couleur_texte.setColor(QPalette::WindowText, Qt::red);
+  probleme_chemin_projet->setPalette(couleur_texte);
 
   //Options
 
@@ -118,18 +137,50 @@ CreationProjet::~CreationProjet()
 }
 
 void CreationProjet::envoyer_informations(){
-    QDir dir(chemin_projet->text());
-    dir.mkdir(nom_projet->text());
-    dir.cd(nom_projet->text());
-    dir.mkdir("images_video");
-    dir.mkdir("dessins");
-    dir.cd("images_video");
-    std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r 12 -t 30 -ss 01:00:00 " + dir.path().toStdString() + "/image%03d.png";
-    std::cout<<str<<std::endl;
-    system(str.c_str());
+    QFile video_dir(chemin_video->text());
+    bool chemin_video_existe = video_dir.exists() && !chemin_video->text().isEmpty() ;
+    std::cout<<video_dir.exists()<<std::endl;
+    if(!chemin_video_existe){
+        probleme_chemin_video->setVisible(true);
+    }
+    else{
+        probleme_chemin_video->setVisible(false);
+    }
 
-    emit information_projet("ii", "hh");
-    close();
+    nom_projet->setText(nom_projet->text().replace(" ", "_"));
+    QDir nom_projet_dir(chemin_projet->text()+"/"+nom_projet->text());
+    bool nom_projet_existe = !nom_projet_dir.exists() && !nom_projet->text().isEmpty();
+    if(!nom_projet_existe){
+        probleme_nom_projet->setVisible(true);
+    }
+    else{
+        probleme_nom_projet->setVisible(false);
+    }
+
+    QDir chemin_projet_dir(chemin_projet->text());
+    bool chemin_projet_existe = chemin_projet_dir.exists() && !chemin_projet->text().isEmpty();
+
+    if(!chemin_projet_existe){
+        probleme_chemin_projet->setVisible(true);
+    }
+    else{
+        probleme_chemin_projet->setVisible(false);
+    }
+
+
+    if(chemin_video_existe && chemin_projet_existe && nom_projet_existe){
+        QDir dir(chemin_projet->text());
+        dir.mkdir(nom_projet->text());
+        dir.cd(nom_projet->text());
+        dir.mkdir("images_video");
+        dir.mkdir("dessins");
+        dir.cd("images_video");
+        std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r 12 -t 30 -ss 01:00:00 " + dir.path().toStdString() + "/image%03d.png";
+        system(str.c_str());
+
+        emit information_projet("ii", "hh");
+        close();
+    }
 }
 
 void CreationProjet::parcourir_dossier(){

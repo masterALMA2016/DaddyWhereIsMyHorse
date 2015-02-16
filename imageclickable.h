@@ -10,6 +10,7 @@ class ImageClickable: public QLabel
 public:
     explicit ImageClickable( std::string s, QWidget * parent = 0);
     ~ImageClickable();
+    std::string get_path();
 
 
 signals:

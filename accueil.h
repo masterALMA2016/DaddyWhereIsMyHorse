@@ -29,6 +29,8 @@ private:
     int longueur_fenetre;
     int largeur_fenetre;
 
+    QLabel *probleme_ouverture_projet;
+
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
 

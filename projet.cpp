@@ -2,6 +2,9 @@
 #include <string>
 Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent)
 {
+
+    frequence_video = frequence;
+    dossier_projet = dossier;
     //parametrage fenetre
     longueur_fenetre = x;
     largeur_fenetre = y;
@@ -20,31 +23,30 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
 
 
     QScrollArea *scrollarea_zone_images = new QScrollArea(this);
-    QVBoxLayout *layout_zone_images = new QVBoxLayout();
+    layout_zone_images = new QVBoxLayout();
 
-
-    for(int i=0; i<10; i++){
-        ImageClickable *image=new ImageClickable("/home/Soge/Images/Wallpapers/game_of_thrones_016.jpg");
-        layout_zone_images->addWidget(image);
-        mes_images.push_back(image);
-    }
+    importer_images();
 
     zone_images = new QWidget(this);
     zone_images->setLayout(layout_zone_images);
     scrollarea_zone_images->setWidget(zone_images);
     scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
-
+    image_fond = new QLabel(this);
+    image_fond->setAlignment(Qt::AlignCenter);
 
     //zone de travail
-    QScrollArea *scr = new QScrollArea(this);
+    scr = new QScrollArea(this);
 
+    QPixmap p((mes_images.at(0))->get_path().c_str());
+    image_fond->setPixmap(p);
 
-    dessin_courant = new Dessin(this);
+    dessin_courant = new Dessin(p.width(), p.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
     dessin_courant->set_color(Qt::black);
     couleur_courante=Qt::black;
     scr->setWidget(dessin_courant);
     scr->setAlignment(Qt::AlignCenter);
+    scr->setStyleSheet("background: transparent");
 
 
     QCheckBox *afficher_image = new QCheckBox(this);
@@ -126,7 +128,7 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     gomme->setIconSize(icone.rect().size());
     connect(gomme, SIGNAL(clicked()), this, SLOT(utiliser_gomme()));
 
-    dessin_courant->changer_taille_crayon(4);
+    //dessin_courant->changer_taille_crayon(4);
 
     choix_taille_crayon = new QComboBox(this);
 
@@ -150,6 +152,8 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     choix_taille_crayon->setIconSize(QSize(50, 50));
     choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
     connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon(int)));
+    image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+
     scr->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
 
 }
@@ -280,12 +284,37 @@ void Projet::changer_taille_crayon(int taille){
 }
 
 void Projet::utiliser_gomme(){
-    std::cout<<"ppppp"<<std::endl;
-
-    dessin_courant->set_color(Qt::white);
+    dessin_courant->set_t(false);
 }
 
 void Projet::utiliser_crayon(){
-    std::cout<<"tttttt"<<std::endl;
+    dessin_courant->set_t(true);
     dessin_courant->set_color(couleur_courante);
+}
+
+void Projet::importer_images(){
+    QDir chemin_image(dossier_projet+"/images_video");
+    chemin_image.setNameFilters(QStringList()<<"*.png");
+    QStringList liste = chemin_image.entryList();
+    for(int i=0; i<liste.size(); i++){
+        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString()+"/"+liste.at(i).toStdString());
+        connect(image, SIGNAL(clicked(std::string)), this, SLOT(afficher(std::string)));
+
+        layout_zone_images->addWidget(image);
+        mes_images.push_back(image);
+
+
+    }
+}
+
+void Projet::afficher(std::string path){
+
+    QPixmap p(path.c_str());
+    image_fond->setPixmap(p);
+
+    dessin_courant = new Dessin(p.width(), p.height(), this);
+    dessin_courant->setAlignment(Qt::AlignCenter);
+    dessin_courant->set_color(Qt::black);
+    couleur_courante=Qt::black;
+    scr->setWidget(dessin_courant);
 }

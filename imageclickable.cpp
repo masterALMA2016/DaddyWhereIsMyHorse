@@ -16,4 +16,7 @@ void ImageClickable::mousePressEvent ( QMouseEvent * event ){
     emit clicked(this->path);
 }
 
+std::string ImageClickable::get_path(){
+    return path;
+}
 

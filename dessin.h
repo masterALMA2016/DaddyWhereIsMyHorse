@@ -10,11 +10,12 @@ class Dessin: public QLabel
 {
     Q_OBJECT
 public:
-    explicit Dessin(QWidget * parent=0);
+    explicit Dessin(int longueur, int largeur, QWidget * parent=0);
     ~Dessin();
     void set_color(QColor couleur);
     QColor get_color();
     void changer_taille_crayon(int i);
+    void set_t(bool choix);
 
 signals:
     void clicked(int x, int y);
@@ -22,12 +23,13 @@ signals:
 protected:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
-    void mouseReleaseEvent(QMouseEvent * event);
+    void mouseReleaseEvent();
 
 private:
     QPen crayon;
     QPixmap dessin;
     bool trace;
+    bool utiliser_crayon;
     int x;
     int y;
 

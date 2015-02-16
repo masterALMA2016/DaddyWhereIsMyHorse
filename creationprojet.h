@@ -1,4 +1,4 @@
-#ifndef CREERPROJET_H
+﻿#ifndef CREERPROJET_H
 #define CREERPROJET_H
 
 #include <QDialog>
@@ -33,6 +33,9 @@ private:
     QLineEdit *chemin_video;
     QComboBox *choix_frequence;
     QLineEdit *chemin_projet;
+    QLabel *probleme_chemin_projet;
+    QLabel *probleme_nom_projet;
+    QLabel *probleme_chemin_video;
 
 };
 

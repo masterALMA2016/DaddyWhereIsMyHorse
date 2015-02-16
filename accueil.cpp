@@ -33,12 +33,24 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     charger_projet->setIcon(icone_bouton);
     charger_projet->setIconSize(image.rect().size());
 
+    QPalette couleur_texte;
+    couleur_texte.setColor(QPalette::WindowText, Qt::red);
+
+    probleme_ouverture_projet = new QLabel(this);
+    probleme_ouverture_projet->setText(QString::fromUtf8("Ce répertoire ne correspond pas à un projet DaddyWhereIsMyHorse"));
+    probleme_ouverture_projet->setPalette(couleur_texte);
+    probleme_ouverture_projet->setVisible(false);
+    probleme_ouverture_projet->setGeometry(450, 570, 500, 25);
+
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
 }
 
 Accueil::~Accueil()
 {
+    delete(charger_projet);
+    delete(nouveau_projet);
+    delete(message_accueil);
 }
 
 void Accueil::creer_projet(){
@@ -49,20 +61,21 @@ void Accueil::creer_projet(){
 }
 
 void Accueil::ouvrir_projet(){
-    QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
 
-    delete(charger_projet);
-    delete(nouveau_projet);
-    delete(message_accueil);
-    Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, 0, "");
-    projet->show();
-    this->close();
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
+    QDir dir(path+"/images_video");
+    if(!dir.exists()){
+        probleme_ouverture_projet->setVisible(true);
+    }
+    else{
+        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, 0, path);
+        projet->show();
+        this->close();
+    }
 }
 
 void Accueil::recuperer_informations(QString chemin_projet, QString frequence){
-    delete(charger_projet);
-    delete(nouveau_projet);
-    delete(message_accueil);
+
     Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence, chemin_projet);
     projet->show();
     this->close();
