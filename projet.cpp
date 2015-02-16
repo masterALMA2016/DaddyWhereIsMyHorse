@@ -1,8 +1,9 @@
 #include "projet.h"
 #include <string>
+#include <iomanip>
 Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent)
 {
-
+    current_index=0;
     frequence_video = frequence;
     dossier_projet = dossier;
     //parametrage fenetre
@@ -24,13 +25,14 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
 
     QScrollArea *scrollarea_zone_images = new QScrollArea(this);
     layout_zone_images = new QVBoxLayout();
-
     importer_images();
 
     zone_images = new QWidget(this);
     zone_images->setLayout(layout_zone_images);
     scrollarea_zone_images->setWidget(zone_images);
     scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
+
+
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
 
@@ -43,6 +45,15 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     dessin_courant = new Dessin(p.width(), p.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
     dessin_courant->set_color(Qt::black);
+
+
+    QPixmap p2((mes_images.at(0))->get_path2().c_str());
+
+
+    dessin_courant->setPixmap(p2);
+
+
+
     couleur_courante=Qt::black;
     scr->setWidget(dessin_courant);
     scr->setAlignment(Qt::AlignCenter);
@@ -52,10 +63,12 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     QCheckBox *afficher_image = new QCheckBox(this);
     afficher_image->setText("Afficher image");
     afficher_image->setGeometry(scrollarea_zone_images->geometry().width()+10, barre_menu->geometry().height(), 120, 20);
+    afficher_image->setChecked(true);
 
     QCheckBox *afficher_dessin = new QCheckBox(this);
     afficher_dessin->setText("Afficher dessin");
     afficher_dessin->setGeometry(scrollarea_zone_images->geometry().width()+10, barre_menu->geometry().height()+20, 120, 20);
+    afficher_dessin->setCheckable(true);
 
     QCheckBox *afficher_pelures_doigons = new QCheckBox(this);
     afficher_pelures_doigons->setText("Afficher pelures d'oigons");
@@ -152,6 +165,7 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     choix_taille_crayon->setIconSize(QSize(50, 50));
     choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
     connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon(int)));
+    connect(sauvegarder, SIGNAL(clicked()), this, SLOT(save()));
     image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
 
     scr->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
@@ -296,25 +310,47 @@ void Projet::importer_images(){
     QDir chemin_image(dossier_projet+"/images_video");
     chemin_image.setNameFilters(QStringList()<<"*.png");
     QStringList liste = chemin_image.entryList();
-    for(int i=0; i<liste.size(); i++){
-        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString()+"/"+liste.at(i).toStdString());
-        connect(image, SIGNAL(clicked(std::string)), this, SLOT(afficher(std::string)));
 
+    QDir chemin_dessin(dossier_projet+"/dessins");
+    chemin_dessin.setNameFilters(QStringList()<<"*.png");
+        QStringList liste2 = chemin_dessin.entryList();
+
+    for(int i=0; i<liste.size(); i++){
+        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString()+"/"+liste.at(i).toStdString(), i);
+        connect(image, SIGNAL(clicked(std::string,std::string, int)), this, SLOT(afficher(std::string, std::string, int)));
+        if(liste2.contains("dessin"+QString::number(i+1)+".png")){
+            image->changer_image(chemin_dessin.path()+"/dessin"+QString::number(i+1)+".png");
+            QPixmap temp(chemin_dessin.path()+"/dessin"+QString::number(i+1)+".png");
+            image->set_path2(chemin_dessin.path().toStdString()+"/dessin"+QString::number(i+1).toStdString()+".png");
+            temp = temp.scaledToWidth(160,  Qt::FastTransformation);
+            image->setPixmap(temp);
+        }
         layout_zone_images->addWidget(image);
         mes_images.push_back(image);
-
-
     }
 }
 
-void Projet::afficher(std::string path){
+void Projet::afficher(std::string path, std::string path2, int ind){
 
     QPixmap p(path.c_str());
     image_fond->setPixmap(p);
-
+    current_index= ind;
     dessin_courant = new Dessin(p.width(), p.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
     dessin_courant->set_color(Qt::black);
+
+    QPixmap p2(path2.c_str());
+
+
+    dessin_courant->setPixmap(p2);
     couleur_courante=Qt::black;
     scr->setWidget(dessin_courant);
+}
+
+void Projet::save(){
+    QString str = dossier_projet+"/dessins/dessin"+QString::number(current_index+1)+".png";
+    dessin_courant->save(str);
+    QPixmap temp = dessin_courant->get_image();
+    temp = temp.scaledToWidth(160,  Qt::FastTransformation);
+    mes_images.at(current_index)->setPixmap(temp);
 }

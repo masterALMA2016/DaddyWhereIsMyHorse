@@ -16,6 +16,8 @@ public:
     QColor get_color();
     void changer_taille_crayon(int i);
     void set_t(bool choix);
+    void save(QString chemin);
+    QPixmap get_image();
 
 signals:
     void clicked(int x, int y);

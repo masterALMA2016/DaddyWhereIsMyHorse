@@ -67,3 +67,11 @@ void Dessin::changer_taille_crayon(int i){
 void Dessin::set_t(bool choix){
     utiliser_crayon=choix;
 }
+
+void Dessin::save(QString chemin){
+    dessin.save(chemin, "PNG");
+}
+
+QPixmap Dessin::get_image(){
+    return dessin;
+}

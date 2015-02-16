@@ -43,13 +43,14 @@ public slots:
     void changer_taille_crayon(int taille);
     void utiliser_gomme();
     void utiliser_crayon();
-    void afficher(std::string path);
+    void afficher(std::string path, std::string path2, int ind);
+    void save();
 
 private:
 
     void creation_menu();
     void importer_images();
-
+    int current_index;
     QComboBox *choix_taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
@@ -63,6 +64,7 @@ private:
     QLabel *image_fond;
     QScrollArea *scr;
     std::vector<ImageClickable*> mes_images;
+    std::vector<ImageClickable*> mes_dessins;
     QVBoxLayout *layout_zone_images;
     QWidget *zone_images;
 };
