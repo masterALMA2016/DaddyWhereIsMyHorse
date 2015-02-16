@@ -2,7 +2,6 @@
 #include <QCursor>
 #include <QMouseEvent>
 #include <iostream>
-#include <QDir>
 Dessin::Dessin(QWidget * parent):QLabel(parent), dessin(800, 800), crayon(Qt::blue)
 {
     dessin.fill(Qt::transparent);

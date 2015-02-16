@@ -1,5 +1,5 @@
 ﻿#include "creationprojet.h"
-
+#include <iostream>
 CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 {
   setWindowTitle("Nouveau Projet");
@@ -21,7 +21,7 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   emplacement_film->setText("Emplacement: ");
   emplacement_film->setGeometry(20, 140, 100, 25);
 
-  QLineEdit *chemin_video = new QLineEdit(this);
+  chemin_video = new QLineEdit(this);
   chemin_video->setGeometry(130,140,200,25);
 
   QPushButton *parcourir = new QPushButton(this);
@@ -30,6 +30,21 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 
 
   //Projet
+
+  QDir home = QDir::home();
+  QString dossier("sans nom");
+  QDir nouveau_dossier(home.path()+"/sans nom");
+  bool existe = nouveau_dossier.exists();
+  int i = 1;
+  while(existe){
+      nouveau_dossier.setPath(nouveau_dossier.path()+QString::number(i));
+      existe = nouveau_dossier.exists();
+      if(!existe){
+          dossier += QString::number(i);
+      }
+      i++;
+  }
+
 
   QLabel *projet_titre = new QLabel(this);
   projet_titre->setText("Projet");
@@ -40,16 +55,18 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   nom_projet_titre->setText("Nom: ");
   nom_projet_titre->setGeometry(20, 240, 100, 25);
 
-  QLineEdit *nom_projet = new QLineEdit(this);
+  nom_projet = new QLineEdit(this);
   nom_projet->setGeometry(130,240,200,25);
+  nom_projet->setText(dossier);
 
 
   QLabel *emplacement_projet_titre = new QLabel(this);
   emplacement_projet_titre->setText("Emplacement: ");
   emplacement_projet_titre->setGeometry(20, 275, 100, 25);
 
-  QLineEdit *chemin_projet = new QLineEdit(this);
+  chemin_projet = new QLineEdit(this);
   chemin_projet->setGeometry(130,275,200,25);
+  chemin_projet->setText(home.path());
 
   QPushButton *parcourir_projet = new QPushButton(this);
   parcourir_projet->setText("Parcourir");
@@ -67,8 +84,8 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   frequence->setText("Fréquence: ");
   frequence->setGeometry(20, 375, 100, 25);
 
-  QComboBox *choix_frequence = new QComboBox(this);
-  choix_frequence->setGeometry(130, 375, 40, 25);
+  choix_frequence = new QComboBox(this);
+  choix_frequence->setGeometry(130, 375, 45, 25);
   choix_frequence->addItem(QString::fromUtf8("6"));
   choix_frequence->addItem(QString::fromUtf8("8"));
   choix_frequence->addItem(QString::fromUtf8("12"));
@@ -90,6 +107,9 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   creer->setGeometry(720, 470, 100, 40);
   connect(creer, SIGNAL(clicked()), this, SLOT(envoyer_informations()));
 
+  connect(parcourir_projet, SIGNAL(clicked()), this, SLOT(parcourir_dossier()));
+  connect(parcourir, SIGNAL(clicked()), this, SLOT(parcourir_video()));
+
 }
 
 CreationProjet::~CreationProjet()
@@ -98,6 +118,24 @@ CreationProjet::~CreationProjet()
 }
 
 void CreationProjet::envoyer_informations(){
-    emit information_projet("ii", "hh", "kk", "mm");
+    QDir dir(chemin_projet->text());
+    dir.mkdir(nom_projet->text());
+    dir.cd(nom_projet->text());
+    dir.mkdir("images_video");
+    dir.mkdir("dessins");
+    dir.cd("images_video");
+    std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r 12 -t 30 -ss 01:00:00 " + dir.path().toStdString() + "/image%03d.png";
+    std::cout<<str<<std::endl;
+    system(str.c_str());
+
+    emit information_projet("ii", "hh");
     close();
+}
+
+void CreationProjet::parcourir_dossier(){
+    chemin_projet->setText(QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly));
+}
+
+void CreationProjet::parcourir_video(){
+    chemin_video->setText(QFileDialog::getOpenFileName(this, tr("Open File"), QDir::home().path(), tr("Videos (*.avi *.mpeg)")));
 }

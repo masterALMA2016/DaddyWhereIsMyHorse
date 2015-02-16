@@ -32,7 +32,7 @@ class Projet: public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Projet(int x, int y, QWidget *parent = 0);
+    explicit Projet(int x, int y, QString frequence, QString dossier, QWidget *parent = 0);
     ~Projet();
 
 
@@ -49,7 +49,8 @@ private:
     QComboBox *choix_taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
-
+    QString frequence;
+    QString dossier_projet;
     Dessin *dessin_courant;
     QPushButton *couleur;
     QColor couleur_courante;

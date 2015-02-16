@@ -1,6 +1,6 @@
 #include "projet.h"
 #include <string>
-Projet::Projet(int x, int y, QWidget *parent):QMainWindow(parent)
+Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent)
 {
     //parametrage fenetre
     longueur_fenetre = x;

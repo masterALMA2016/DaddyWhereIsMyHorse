@@ -9,6 +9,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QComboBox>
+#include <QDirIterator>
+#include <QFileDialog>
 
 class CreationProjet: public QDialog
 {
@@ -20,11 +22,17 @@ public:
 
 public slots:
     void envoyer_informations();
+    void parcourir_dossier();
+    void parcourir_video();
 
 signals:
-    void information_projet(std::string nom_projet, std::string chemin_projet, std::string chemin_video, std::string frequence);
+    void information_projet(QString chemin_projet, QString frequence);
 
 private:
+    QLineEdit *nom_projet;
+    QLineEdit *chemin_video;
+    QComboBox *choix_frequence;
+    QLineEdit *chemin_projet;
 
 };
 
