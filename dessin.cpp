@@ -88,3 +88,5 @@ void Dessin::set_dessin(QPixmap image){
     dessin = image;
     setPixmap(dessin);
 }
+
+

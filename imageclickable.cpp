@@ -36,9 +36,29 @@ void ImageClickable::changer_image(QString nouveau_path_image){
     path_dessin = nouveau_path_image.toStdString();
     temp = temp.scaledToWidth(160,  Qt::FastTransformation);
     setPixmap(temp);
-
 }
 
 void ImageClickable::set_path_dessin(std::string nouveau_path_dessin){
     path_dessin = nouveau_path_dessin;
+}
+
+void ImageClickable::set_affichage_image(bool choix){
+    if(choix){
+        this->setStyleSheet("background-color: transparent");
+    }
+    else{
+        std::string option_image_de_fond ="border-image: url(" + path_image_film + ")";
+        this->setStyleSheet(option_image_de_fond.c_str());
+    }
+}
+
+void ImageClickable::set_affichage_dessin(bool choix){
+    if(!choix){
+        setPixmap(QPixmap());
+    }
+    else if(!path_dessin.empty()){
+        QPixmap temp(path_dessin.c_str());
+        temp = temp.scaledToWidth(160,  Qt::FastTransformation);
+        setPixmap(temp);
+    }
 }

@@ -35,7 +35,7 @@ class Projet: public QMainWindow
 public:
     explicit Projet(int x, int y, QString frequence, QString dossier, QWidget *parent = 0);
     ~Projet();
-
+    void affichage_pelures_doigons();
 
 public slots:
     void changer_couleur();
@@ -45,27 +45,44 @@ public slots:
     void utiliser_crayon();
     void afficher(std::string path_image_film, std::string path_dessin, int index);
     void save();
-
+    void image_suivante();
+    void image_precedente();
+    void changer_affichage_image();
+    void changer_affichage_dessin();
+    void changer_affichage_pelures_doignons();
+    void action_changer_affichage_pelures_doignons();
 private:
 
     void creation_menu();
     void importer_images();
+    void initialistaion_mes_pelures_doignons();
 
     int current_index;
     int taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
+    int nombre_de_pelures_doignons;
+    int frequence_pelures_doignons;
+    int previsualisation_rapide;
+
 
     QString frequence_video;
     QString dossier_projet;
 
     std::vector<ImageClickable*> mes_images;
+    std::vector<QLabel*> mes_pelures;
 
     QLabel *image_fond;
     Dessin *dessin_courant;
     QColor couleur_courante;
     QComboBox *choix_taille_crayon;
     QPushButton *couleur;
+
+    QCheckBox *afficher_pelures_doigons;
+    QCheckBox *afficher_dessin;
+    QCheckBox *afficher_image;
+
+    QScrollArea *scrollarea_zone_images;
 
     QMenuBar *barre_menu;
 

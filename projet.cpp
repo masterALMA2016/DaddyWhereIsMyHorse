@@ -1,15 +1,21 @@
 #include "projet.h"
 #include <string>
 #include <iomanip>
-Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent)
+Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent), mes_pelures(5)
 {
     current_index = 0;
     taille_crayon = 4;
+    nombre_de_pelures_doignons = 5;
+    frequence_pelures_doignons = 1;
+    previsualisation_rapide = 10;
     frequence_video = frequence;
     dossier_projet = dossier;
     //parametrage fenetre
     longueur_fenetre = x;
     largeur_fenetre = y;
+
+
+
 
     this->setWindowTitle("Projet");
     this->setMinimumSize(longueur_fenetre,largeur_fenetre);
@@ -17,7 +23,7 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
 
     creation_menu();
 
-    QScrollArea *scrollarea_zone_images = new QScrollArea(this);
+    scrollarea_zone_images = new QScrollArea(this);
     layout_zone_images = new QVBoxLayout();
     importer_images();
 
@@ -28,6 +34,9 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
 
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
+    image_fond->setStyleSheet("background-color: transparent");
+
+    initialistaion_mes_pelures_doignons();
 
     zone_de_travail = new QScrollArea(this);
 
@@ -51,22 +60,26 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     zone_de_travail->setAlignment(Qt::AlignCenter);
     zone_de_travail->setStyleSheet("background: transparent");
 
-    QCheckBox *afficher_image = new QCheckBox(this);
+    afficher_image = new QCheckBox(this);
     afficher_image->setText("Afficher image");
-    afficher_image->setGeometry(scrollarea_zone_images->geometry().width()+10, barre_menu->geometry().height(), 120, 20);
+    afficher_image->setGeometry(scrollarea_zone_images->geometry().width() + 10, barre_menu->geometry().height(), 120, 20);
     afficher_image->setChecked(true);
+    connect(afficher_image, SIGNAL(clicked()), this, SLOT(changer_affichage_image()));
 
-    QCheckBox *afficher_dessin = new QCheckBox(this);
+
+    afficher_dessin = new QCheckBox(this);
     afficher_dessin->setText("Afficher dessin");
-    afficher_dessin->setGeometry(scrollarea_zone_images->geometry().width()+10, barre_menu->geometry().height()+20, 120, 20);
-    afficher_dessin->setCheckable(true);
+    afficher_dessin->setGeometry(scrollarea_zone_images->geometry().width() + 10, barre_menu->geometry().height() + 20, 120, 20);
+    afficher_dessin->setChecked(true);
+    connect(afficher_dessin, SIGNAL(clicked()), this, SLOT(changer_affichage_dessin()));
 
-    QCheckBox *afficher_pelures_doigons = new QCheckBox(this);
+    afficher_pelures_doigons = new QCheckBox(this);
     afficher_pelures_doigons->setText("Afficher pelures d'oigons");
-    afficher_pelures_doigons->setGeometry(scrollarea_zone_images->geometry().width()+130, barre_menu->geometry().height(), 190, 20);
+    afficher_pelures_doigons->setGeometry(scrollarea_zone_images->geometry().width() + 130, barre_menu->geometry().height(), 190, 20);
+    connect(afficher_pelures_doigons, SIGNAL(clicked()), this, SLOT(changer_affichage_pelures_doignons()));
 
     QPushButton *previsualisation = new QPushButton(this);
-    previsualisation->setGeometry(scrollarea_zone_images->geometry().width()+330, barre_menu->geometry().height(), 50, 40);
+    previsualisation->setGeometry(scrollarea_zone_images->geometry().width() + 330, barre_menu->geometry().height(), 50, 40);
     QPixmap image_oeil("../DaddyWhereIsMyHorse/oeil.png");
     image_oeil = image_oeil.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_oeil(image_oeil);
@@ -74,12 +87,14 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     previsualisation->setIconSize(image_oeil.rect().size());
 
     QPushButton *precedent = new QPushButton(this);
-    precedent->setGeometry(scrollarea_zone_images->geometry().width()+390, barre_menu->geometry().height(), 50, 40);
+    precedent->setGeometry(scrollarea_zone_images->geometry().width() + 390, barre_menu->geometry().height(), 50, 40);
     QPixmap image_precedent("../DaddyWhereIsMyHorse/fleche_gauche.png");
     image_precedent = image_precedent.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_precedent(image_precedent);
     precedent->setIcon(icone_precedent);
     precedent->setIconSize(image_precedent.rect().size());
+    connect(precedent, SIGNAL(clicked()), this, SLOT(image_precedente()));
+
 
     QPushButton *suivant = new QPushButton(this);
     suivant->setGeometry(scrollarea_zone_images->geometry().width()+450, barre_menu->geometry().height(), 50, 40);
@@ -88,6 +103,8 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     QIcon icone_suivant(image_suivant);
     suivant->setIcon(icone_suivant);
     suivant->setIconSize(image_suivant.rect().size());
+    connect(suivant, SIGNAL(clicked()), this, SLOT(image_suivante()));
+
 
     QPushButton *sauvegarder = new QPushButton(this);
     sauvegarder->setGeometry(scrollarea_zone_images->geometry().width()+510, barre_menu->geometry().height(), 50, 40);
@@ -114,21 +131,21 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     //pour utiliser le crayon
     QPushButton *crayon = new QPushButton(this);
     crayon->setGeometry(scrollarea_zone_images->geometry().width()+690, barre_menu->geometry().height(), 50, 40);
-    QPixmap icone("../DaddyWhereIsMyHorse/crayon.png");
-    icone = icone.scaledToWidth(35, Qt::FastTransformation);
-    QIcon i(icone);
-    crayon->setIcon(i);
-    crayon->setIconSize(icone.rect().size());
+    QPixmap image_crayon("../DaddyWhereIsMyHorse/crayon.png");
+    image_crayon = image_crayon.scaledToWidth(35, Qt::FastTransformation);
+    QIcon icone_crayon(image_crayon);
+    crayon->setIcon(icone_crayon);
+    crayon->setIconSize(image_crayon.rect().size());
     connect(crayon, SIGNAL(clicked()), this, SLOT(utiliser_crayon()));
 
     //pour utiliser la gomme
     QPushButton *gomme = new QPushButton(this);
     gomme->setGeometry(scrollarea_zone_images->geometry().width()+750, barre_menu->geometry().height(), 50, 40);
-    QPixmap icone_gomme("../DaddyWhereIsMyHorse/gomme.png");
-    icone_gomme = icone_gomme.scaledToWidth(35, Qt::FastTransformation);
-    QIcon i2(icone_gomme);
-    gomme->setIcon(i2);
-    gomme->setIconSize(icone.rect().size());
+    QPixmap image_gomme("../DaddyWhereIsMyHorse/gomme.png");
+    image_gomme = image_gomme.scaledToWidth(35, Qt::FastTransformation);
+    QIcon icone_gomme(image_gomme);
+    gomme->setIcon(icone_gomme);
+    gomme->setIconSize(image_crayon.rect().size());
     connect(gomme, SIGNAL(clicked()), this, SLOT(utiliser_gomme()));
 
     choix_taille_crayon = new QComboBox(this);
@@ -165,8 +182,12 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     connect(sauvegarder, SIGNAL(clicked()), this, SLOT(save()));
 
     image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
-
+    for(int i = 0; i < mes_pelures.size(); i++){
+        mes_pelures.at(i)->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+    }
     zone_de_travail->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+
+
 }
 
 void Projet::creation_menu(){
@@ -230,16 +251,19 @@ void Projet::creation_menu(){
     afficher_images->setText(QString::fromUtf8("Afficher images"));
     afficher_images->setShortcut(QKeySequence("CTRL+1"));
     edition->addAction(afficher_images);
+    connect(afficher_images, SIGNAL(triggered()), this, SLOT(changer_affichage_image()));
 
     QAction *afficher_dessins = new QAction(this);
     afficher_dessins->setText(QString::fromUtf8("Afficher dessins"));
     afficher_dessins->setShortcut(QKeySequence("CTRL+2"));
     edition->addAction(afficher_dessins);
+    connect(afficher_dessins, SIGNAL(triggered()), this, SLOT(changer_affichage_dessin()));
 
-    QAction *afficher_pelures_doigons = new QAction(this);
-    afficher_pelures_doigons->setText(QString::fromUtf8("Afficher pelures d'oignons"));
-    afficher_pelures_doigons->setShortcut(QKeySequence("CTRL+3"));
-    edition->addAction(afficher_pelures_doigons);
+    QAction *afficher_pelures_doigon = new QAction(this);
+    afficher_pelures_doigon->setText(QString::fromUtf8("Afficher pelures d'oignons"));
+    afficher_pelures_doigon->setShortcut(QKeySequence("CTRL+3"));
+    edition->addAction(afficher_pelures_doigon);
+    connect(afficher_pelures_doigon, SIGNAL(triggered()), this, SLOT(action_changer_affichage_pelures_doignons()));
 
     QAction *previsualisation_rapide = new QAction(this);
     previsualisation_rapide->setText(QString::fromUtf8("Prévisualisation rapide"));
@@ -250,21 +274,25 @@ void Projet::creation_menu(){
     suivant->setText(QString::fromUtf8("Suivant"));
     suivant->setShortcut(QKeySequence("CTRL+right"));
     edition->addAction(suivant);
+    connect(suivant, SIGNAL(triggered()), this, SLOT(image_suivante()));
 
     QAction *precedent = new QAction(this);
     precedent->setText(QString::fromUtf8("Précédent"));
     precedent->setShortcut(QKeySequence("CTRL+left"));
     edition->addAction(precedent);
+    connect(precedent, SIGNAL(triggered()), this, SLOT(image_precedente()));
 
     QAction *crayon = new QAction(this);
     crayon->setText(QString::fromUtf8("Crayon"));
     crayon->setShortcut(QKeySequence("CTRL+C"));
     edition->addAction(crayon);
+    connect(crayon, SIGNAL(triggered()), this, SLOT(utiliser_crayon()));
 
     QAction *gomme = new QAction(this);
     gomme->setText(QString::fromUtf8("Gomme"));
     gomme->setShortcut(QKeySequence("CTRL+G"));
     edition->addAction(gomme);
+    connect(gomme, SIGNAL(triggered()), this, SLOT(utiliser_gomme()));
 
 
 }
@@ -279,6 +307,7 @@ Projet::~Projet()
     delete(zone_de_travail);
     delete(layout_zone_images);
     delete(zone_images);
+    delete(scrollarea_zone_images);
 
     for(int i = 0; i<mes_images.size(); i++){
         delete(mes_images.at(i));
@@ -302,8 +331,6 @@ void Projet::couleur_choisie(QColor nouvelle_couleur){
 }
 
 void Projet::changer_taille_crayon(int taille){
-    std::cout<<taille_crayon<<std::endl;
-
     QString nouvelle_taille = choix_taille_crayon->currentText();
     dessin_courant->changer_taille_crayon(nouvelle_taille.toInt());
     taille_crayon = nouvelle_taille.toInt();
@@ -342,10 +369,10 @@ void Projet::importer_images(){
 }
 
 void Projet::afficher(std::string path_image_film, std::string path_dessin, int index){
-
     QPixmap afficher_image_film(path_image_film.c_str());
     image_fond->setPixmap(afficher_image_film);
     current_index = index;
+    affichage_pelures_doigons();
 
     dessin_courant = new Dessin(afficher_image_film.width(), afficher_image_film.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
@@ -369,4 +396,88 @@ void Projet::save(){
     dessin_temp = dessin_temp.scaledToWidth(160,  Qt::FastTransformation);
     mes_images.at(current_index)->setPixmap(dessin_temp);
     mes_images.at(current_index)->set_path_dessin(chemin_sauvegarde.toStdString());
+}
+
+void Projet::image_suivante(){
+    if(current_index < mes_images.size()){
+        current_index++;
+        afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
+    }
+}
+
+void Projet::image_precedente(){
+    if(current_index>=0){
+        current_index--;
+        afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
+    }
+}
+
+void Projet::changer_affichage_image(){
+    image_fond->setVisible(!image_fond->isVisible());
+    for(int i = 0; i<mes_images.size(); i++){
+        mes_images.at(i)->set_affichage_image(!image_fond->isVisible());
+    }
+    if(image_fond->isVisible()!=afficher_image->isChecked()){
+        afficher_image->setChecked(!afficher_image->isChecked());
+    }
+}
+
+void Projet::changer_affichage_dessin(){
+    dessin_courant->setVisible(!dessin_courant->isVisible());
+    for(int i = 0; i<mes_images.size(); i++){
+        mes_images.at(i)->set_affichage_dessin(dessin_courant->isVisible());
+    }
+    if(dessin_courant->isVisible()!=afficher_dessin->isChecked()){
+        afficher_dessin->setChecked(!afficher_dessin->isChecked());
+    }
+}
+
+void Projet::affichage_pelures_doigons(){
+    int i = current_index - 1;
+    int max = nombre_de_pelures_doignons;
+    int transparence = 200;
+    int index_mes_pelures = 0;
+    while(i > 0 && max != 0 && mes_pelures.size() > index_mes_pelures){
+        if(!mes_images.at(i)->get_path_dessin().empty()){
+
+            QPixmap nouvelle_pelure(mes_images.at(i)->get_path_dessin().c_str());
+
+            QPixmap pelure_transparente(nouvelle_pelure.size());
+            pelure_transparente.fill(Qt::transparent);
+            QPainter painter_transparent(&pelure_transparente);
+            painter_transparent.setCompositionMode(QPainter::CompositionMode_Source);
+            painter_transparent.drawPixmap(0, 0, nouvelle_pelure);
+            painter_transparent.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+
+            painter_transparent.fillRect(pelure_transparente.rect(), QColor(0, 0, 0, transparence));
+            painter_transparent.end();
+            transparence = transparence/2;
+            nouvelle_pelure = pelure_transparente;
+
+            mes_pelures.at(index_mes_pelures)->setPixmap(nouvelle_pelure);
+            index_mes_pelures++;
+            max--;
+        }
+        i = i - frequence_pelures_doignons;
+    }
+}
+
+void Projet::initialistaion_mes_pelures_doignons(){
+    for(int i = 0; i < mes_pelures.size(); i++){
+        QLabel *temp = new QLabel(this);
+        temp->setAlignment(Qt::AlignCenter);
+        temp->setVisible(false);
+        mes_pelures.at(i) = temp;
+    }
+}
+
+void Projet::changer_affichage_pelures_doignons(){
+    for(int i = 0; i<mes_pelures.size(); i++){
+        mes_pelures.at(i)->setVisible(afficher_pelures_doigons->isChecked());
+    }
+}
+
+void Projet::action_changer_affichage_pelures_doignons(){
+    afficher_pelures_doigons->setChecked(!afficher_pelures_doigons->isChecked());
+    changer_affichage_pelures_doignons();
 }
