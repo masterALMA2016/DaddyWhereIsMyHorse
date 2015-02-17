@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
+#include "histo.h"
 
 class Dessin: public QLabel
 {
@@ -20,6 +21,7 @@ public:
     void set_dessin(QPixmap image);
     void changer_taille_crayon(int nouvelle_taille);
     void save(QString chemin);
+    void undo();
 
 protected:
     void mousePressEvent(QMouseEvent * event);
@@ -29,9 +31,15 @@ protected:
 private:
     QPen crayon;
     QPixmap dessin;
+    QCursor curseur;
+    QPixmap image_souris;
+
+    std::string path_souris;
 
     bool tracer_ligne;
     bool utiliser_crayon;
+
+    std::vector<Histo> historique;
 
     int x;
     int y;

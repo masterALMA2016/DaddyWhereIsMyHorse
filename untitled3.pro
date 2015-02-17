@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     projet.cpp \
     imageclickable.cpp \
     dessin.cpp \
-    creationprojet.cpp
+    creationprojet.cpp \
+    histo.cpp
 
 HEADERS  += \
     accueil.h \
     projet.h \
     imageclickable.h \
     dessin.h \
-    creationprojet.h
+    creationprojet.h \
+    histo.h
 
 FORMS    +=
 

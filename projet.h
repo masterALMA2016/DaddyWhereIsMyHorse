@@ -51,6 +51,8 @@ public slots:
     void changer_affichage_dessin();
     void changer_affichage_pelures_doignons();
     void action_changer_affichage_pelures_doignons();
+    void undo();
+
 private:
 
     void creation_menu();

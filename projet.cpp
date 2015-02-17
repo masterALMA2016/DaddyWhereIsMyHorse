@@ -121,6 +121,7 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     QIcon icone_undo(image_undo);
     undo->setIcon(icone_undo);
     undo->setIconSize(image_undo.rect().size());
+    connect(undo, SIGNAL(clicked()), this, SLOT(undo()));
 
     //pour la couleur du crayon
     couleur = new QPushButton(this);
@@ -246,6 +247,7 @@ void Projet::creation_menu(){
     annuler->setText(QString::fromUtf8("Annuler"));
     annuler->setShortcut(QKeySequence("CTRL+Z"));
     edition->addAction(annuler);
+    connect(annuler, SIGNAL(triggered()), this, SLOT(undo()));
 
     QAction *afficher_images = new QAction(this);
     afficher_images->setText(QString::fromUtf8("Afficher images"));
@@ -480,4 +482,8 @@ void Projet::changer_affichage_pelures_doignons(){
 void Projet::action_changer_affichage_pelures_doignons(){
     afficher_pelures_doigons->setChecked(!afficher_pelures_doigons->isChecked());
     changer_affichage_pelures_doignons();
+}
+
+void Projet::undo(){
+    dessin_courant->undo();
 }
