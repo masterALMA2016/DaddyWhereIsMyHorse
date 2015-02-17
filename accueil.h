@@ -10,6 +10,11 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QVBoxLayout>
+#include <iostream>
+#include <QTextStream>
+#include "creationprojet.h"
+#include "projet.h"
 
 class Accueil : public QMainWindow
 {
@@ -30,11 +35,11 @@ private:
     int largeur_fenetre;
 
     QLabel *probleme_ouverture_projet;
+    QLabel *message_accueil;
 
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
 
-    QLabel *message_accueil;
 };
 
 #endif // ACCUEIL_H

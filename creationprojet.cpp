@@ -40,11 +40,11 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 
   QDir home = QDir::home();
   QString dossier("sans nom");
-  QDir nouveau_dossier(home.path()+"/sans nom");
+  QDir nouveau_dossier(home.path() + "/sans nom");
   bool existe = nouveau_dossier.exists();
   int i = 1;
   while(existe){
-      nouveau_dossier.setPath(nouveau_dossier.path()+QString::number(i));
+      nouveau_dossier.setPath(nouveau_dossier.path() + QString::number(i));
       existe = nouveau_dossier.exists();
       if(!existe){
           dossier += QString::number(i);
@@ -133,13 +133,20 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 
 CreationProjet::~CreationProjet()
 {
-
+    delete(nom_projet);
+    delete(chemin_video);
+    delete(choix_frequence);
+    delete(chemin_projet);
+    delete(probleme_chemin_projet);
+    delete(probleme_nom_projet);
+    delete(probleme_chemin_video);
 }
 
 void CreationProjet::envoyer_informations(){
+
     QFile video_dir(chemin_video->text());
     bool chemin_video_existe = video_dir.exists() && !chemin_video->text().isEmpty() ;
-    std::cout<<video_dir.exists()<<std::endl;
+
     if(!chemin_video_existe){
         probleme_chemin_video->setVisible(true);
     }
@@ -147,9 +154,11 @@ void CreationProjet::envoyer_informations(){
         probleme_chemin_video->setVisible(false);
     }
 
+    //si le nom du dossier du projet a un espace ca ne fonctionne pas
     nom_projet->setText(nom_projet->text().replace(" ", "_"));
-    QDir nom_projet_dir(chemin_projet->text()+"/"+nom_projet->text());
+    QDir nom_projet_dir(chemin_projet->text() + "/" + nom_projet->text());
     bool nom_projet_existe = !nom_projet_dir.exists() && !nom_projet->text().isEmpty();
+
     if(!nom_projet_existe){
         probleme_nom_projet->setVisible(true);
     }
@@ -169,16 +178,24 @@ void CreationProjet::envoyer_informations(){
 
 
     if(chemin_video_existe && chemin_projet_existe && nom_projet_existe){
-        QDir dir(chemin_projet->text());
-        dir.mkdir(nom_projet->text());
-        dir.cd(nom_projet->text());
-        dir.mkdir("images_video");
-        dir.mkdir("dessins");
-        dir.cd("images_video");
-        std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r 12 -t 30 -ss 01:00:00 " + dir.path().toStdString() + "/image%03d.png";
-        system(str.c_str());
+        QDir dir_projet(chemin_projet->text());
+        dir_projet.mkdir(nom_projet->text());
+        dir_projet.cd(nom_projet->text());
+        QString nouveau_projet = dir_projet.path();
 
-        emit information_projet("ii", "hh");
+        dir_projet.mkdir("images_video");
+        dir_projet.mkdir("dessins");
+        dir_projet.cd("images_video");
+        std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r " + choix_frequence->currentText().toStdString() + " " + dir_projet.path().toStdString() + "/image%03d.png";
+        system(str.c_str());
+        QFile configuration;
+        configuration.setFileName("dwimh.conf");
+        configuration.open(QIODevice::WriteOnly);
+        configuration.write(choix_frequence->currentText().toStdString().c_str());
+        nouveau_projet+="/dwimh.conf";
+        configuration.copy(nouveau_projet );
+        configuration.remove();
+        emit information_projet(nom_projet_dir.path(), choix_frequence->currentText());
         close();
     }
 }
@@ -188,5 +205,5 @@ void CreationProjet::parcourir_dossier(){
 }
 
 void CreationProjet::parcourir_video(){
-    chemin_video->setText(QFileDialog::getOpenFileName(this, tr("Open File"), QDir::home().path(), tr("Videos (*.avi *.mpeg)")));
+    chemin_video->setText(QFileDialog::getOpenFileName(this, tr("Open File"), QDir::home().path(), tr("Videos (*.avi *.mpeg *.mp4)")));
 }

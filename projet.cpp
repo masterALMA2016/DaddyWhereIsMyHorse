@@ -3,7 +3,8 @@
 #include <iomanip>
 Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent)
 {
-    current_index=0;
+    current_index = 0;
+    taille_crayon = 4;
     frequence_video = frequence;
     dossier_projet = dossier;
     //parametrage fenetre
@@ -16,13 +17,6 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
 
     creation_menu();
 
-
-    //ajout boutons
-
-
-
-
-
     QScrollArea *scrollarea_zone_images = new QScrollArea(this);
     layout_zone_images = new QVBoxLayout();
     importer_images();
@@ -32,33 +26,30 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     scrollarea_zone_images->setWidget(zone_images);
     scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
 
-
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
 
-    //zone de travail
-    scr = new QScrollArea(this);
+    zone_de_travail = new QScrollArea(this);
 
-    QPixmap p((mes_images.at(0))->get_path().c_str());
-    image_fond->setPixmap(p);
+    QPixmap image_init_espace_travail((mes_images.at(0))->get_path_image_film().c_str());
+    image_fond->setPixmap(image_init_espace_travail);
 
-    dessin_courant = new Dessin(p.width(), p.height(), this);
+    dessin_courant = new Dessin(image_init_espace_travail.width(), image_init_espace_travail.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
     dessin_courant->set_color(Qt::black);
+    std::string path_init_dessin = mes_images.at(0)->get_path_dessin().c_str();
 
+    if(!path_init_dessin.empty()){
+        QPixmap dessin_init(path_init_dessin.c_str());
+        dessin_courant->set_dessin(dessin_init);
+    }
 
-    QPixmap p2((mes_images.at(0))->get_path2().c_str());
+    zone_de_travail->setWidget(dessin_courant);
 
-
-    dessin_courant->setPixmap(p2);
-
-
-
-    couleur_courante=Qt::black;
-    scr->setWidget(dessin_courant);
-    scr->setAlignment(Qt::AlignCenter);
-    scr->setStyleSheet("background: transparent");
-
+    couleur_courante = Qt::black;
+    zone_de_travail->setWidget(dessin_courant);
+    zone_de_travail->setAlignment(Qt::AlignCenter);
+    zone_de_travail->setStyleSheet("background: transparent");
 
     QCheckBox *afficher_image = new QCheckBox(this);
     afficher_image->setText("Afficher image");
@@ -130,7 +121,6 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     crayon->setIconSize(icone.rect().size());
     connect(crayon, SIGNAL(clicked()), this, SLOT(utiliser_crayon()));
 
-
     //pour utiliser la gomme
     QPushButton *gomme = new QPushButton(this);
     gomme->setGeometry(scrollarea_zone_images->geometry().width()+750, barre_menu->geometry().height(), 50, 40);
@@ -141,35 +131,42 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     gomme->setIconSize(icone.rect().size());
     connect(gomme, SIGNAL(clicked()), this, SLOT(utiliser_gomme()));
 
-    //dessin_courant->changer_taille_crayon(4);
-
     choix_taille_crayon = new QComboBox(this);
 
-    int j = 4;
-    int pos=0;
-    while(j<30){
-        QPixmap pp(j,j);
-        pp.fill(Qt::transparent);
-        QPen cc(Qt::black);
-        cc.setCapStyle(Qt::RoundCap);
-        cc.setWidth(j);
-        QPainter pai(&pp);
-        pai.setPen(cc);
-        pai.drawPoint(j/2, j/2);
-        QString s=QString::number(j);
-        choix_taille_crayon->addItem(s);
-        choix_taille_crayon->setItemIcon(pos, pp);
+    int diametre_crayon = 4;
+    int pos = 0;
+    while(diametre_crayon < 30){
+
+        QPixmap image_taille_crayon(diametre_crayon, diametre_crayon);
+        image_taille_crayon.fill(Qt::transparent);
+
+        QPen crayon_taille_crayon(Qt::black);
+        crayon_taille_crayon.setCapStyle(Qt::RoundCap);
+        crayon_taille_crayon.setWidth(diametre_crayon);
+
+        QPainter paint(&image_taille_crayon);
+        paint.setPen(crayon_taille_crayon);
+        paint.drawPoint(diametre_crayon/2, diametre_crayon/2);
+
+        QString string_taille_crayon = QString::number(diametre_crayon);
+        choix_taille_crayon->addItem(string_taille_crayon);
+        choix_taille_crayon->setItemIcon(pos, image_taille_crayon);
+
         pos++;
-        j+=4;
+        diametre_crayon += 4;
     }
+
+    changer_taille_crayon(taille_crayon);
+
     choix_taille_crayon->setIconSize(QSize(50, 50));
     choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
+
     connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon(int)));
     connect(sauvegarder, SIGNAL(clicked()), this, SLOT(save()));
+
     image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
 
-    scr->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
-
+    zone_de_travail->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
 }
 
 void Projet::creation_menu(){
@@ -196,6 +193,7 @@ void Projet::creation_menu(){
     enregistrer->setText(QString::fromUtf8("Enregistrer"));
     enregistrer->setShortcut(QKeySequence("CTRL+S"));
     fichier->addAction(enregistrer);
+    connect(enregistrer, SIGNAL(triggered()), this, SLOT(save()));
 
     QAction *exporter_la_video = new QAction(this);
     exporter_la_video->setText(QString::fromUtf8("Exporter la viéo"));
@@ -273,84 +271,102 @@ void Projet::creation_menu(){
 
 Projet::~Projet()
 {
+    delete(image_fond);
+    delete(dessin_courant);
+    delete(choix_taille_crayon);
+    delete(couleur);
+    delete(barre_menu);
+    delete(zone_de_travail);
+    delete(layout_zone_images);
+    delete(zone_images);
 
+    for(int i = 0; i<mes_images.size(); i++){
+        delete(mes_images.at(i));
+    }
 }
 
 void Projet::changer_couleur(){
-        QColor col;
-        QColorDialog *qd = new QColorDialog(this);
-        qd->setModal(true);
-        qd->setCurrentColor(dessin_courant->get_color());
-        connect(qd, SIGNAL(colorSelected(QColor)), this, SLOT(couleur_choisie(QColor)));
-        qd->open();
+        QColor nouvelle_couleur;
+        QColorDialog *color_dialog = new QColorDialog(this);
+        color_dialog->setModal(true);
+        color_dialog->setCurrentColor(dessin_courant->get_color());
+        connect(color_dialog, SIGNAL(colorSelected(QColor)), this, SLOT(couleur_choisie(QColor)));
+        color_dialog->open();
 
 }
 
 void Projet::couleur_choisie(QColor nouvelle_couleur){
-    couleur->setStyleSheet("background-color:"+nouvelle_couleur.name()+";");
+    couleur->setStyleSheet("background-color:" + nouvelle_couleur.name() + ";");
     dessin_courant->set_color(nouvelle_couleur);
     couleur_courante=nouvelle_couleur;
 }
 
 void Projet::changer_taille_crayon(int taille){
-    QString s=choix_taille_crayon->currentText();
-    dessin_courant->changer_taille_crayon(s.toInt());
+    std::cout<<taille_crayon<<std::endl;
+
+    QString nouvelle_taille = choix_taille_crayon->currentText();
+    dessin_courant->changer_taille_crayon(nouvelle_taille.toInt());
+    taille_crayon = nouvelle_taille.toInt();
 }
 
 void Projet::utiliser_gomme(){
-    dessin_courant->set_t(false);
+    dessin_courant->set_utiliser_crayon(false);
 }
 
 void Projet::utiliser_crayon(){
-    dessin_courant->set_t(true);
+    dessin_courant->set_utiliser_crayon(true);
     dessin_courant->set_color(couleur_courante);
 }
 
 void Projet::importer_images(){
     QDir chemin_image(dossier_projet+"/images_video");
     chemin_image.setNameFilters(QStringList()<<"*.png");
-    QStringList liste = chemin_image.entryList();
+    QStringList liste_images_film = chemin_image.entryList();
 
     QDir chemin_dessin(dossier_projet+"/dessins");
     chemin_dessin.setNameFilters(QStringList()<<"*.png");
-        QStringList liste2 = chemin_dessin.entryList();
+    QStringList liste_dessin = chemin_dessin.entryList();
 
-    for(int i=0; i<liste.size(); i++){
-        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString()+"/"+liste.at(i).toStdString(), i);
+    for(int i = 0; i < liste_images_film.size(); i++){
+
+        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString(), i);
         connect(image, SIGNAL(clicked(std::string,std::string, int)), this, SLOT(afficher(std::string, std::string, int)));
-        if(liste2.contains("dessin"+QString::number(i+1)+".png")){
-            image->changer_image(chemin_dessin.path()+"/dessin"+QString::number(i+1)+".png");
-            QPixmap temp(chemin_dessin.path()+"/dessin"+QString::number(i+1)+".png");
-            image->set_path2(chemin_dessin.path().toStdString()+"/dessin"+QString::number(i+1).toStdString()+".png");
-            temp = temp.scaledToWidth(160,  Qt::FastTransformation);
-            image->setPixmap(temp);
+
+        if(liste_dessin.contains("dessin" + QString::number(i + 1) + ".png")){
+            image->changer_image(chemin_dessin.path() + "/dessin" + QString::number(i + 1) + ".png");
         }
+
         layout_zone_images->addWidget(image);
         mes_images.push_back(image);
     }
 }
 
-void Projet::afficher(std::string path, std::string path2, int ind){
+void Projet::afficher(std::string path_image_film, std::string path_dessin, int index){
 
-    QPixmap p(path.c_str());
-    image_fond->setPixmap(p);
-    current_index= ind;
-    dessin_courant = new Dessin(p.width(), p.height(), this);
+    QPixmap afficher_image_film(path_image_film.c_str());
+    image_fond->setPixmap(afficher_image_film);
+    current_index = index;
+
+    dessin_courant = new Dessin(afficher_image_film.width(), afficher_image_film.height(), this);
     dessin_courant->setAlignment(Qt::AlignCenter);
     dessin_courant->set_color(Qt::black);
 
-    QPixmap p2(path2.c_str());
+    if(!path_dessin.empty()){
+        QPixmap afficher_dessin(path_dessin.c_str());
+        dessin_courant->set_dessin(afficher_dessin);
+    }
 
+    dessin_courant->changer_taille_crayon(taille_crayon);
 
-    dessin_courant->setPixmap(p2);
-    couleur_courante=Qt::black;
-    scr->setWidget(dessin_courant);
+    zone_de_travail->setWidget(dessin_courant);
+    dessin_courant->set_color(couleur_courante);
 }
 
 void Projet::save(){
-    QString str = dossier_projet+"/dessins/dessin"+QString::number(current_index+1)+".png";
-    dessin_courant->save(str);
-    QPixmap temp = dessin_courant->get_image();
-    temp = temp.scaledToWidth(160,  Qt::FastTransformation);
-    mes_images.at(current_index)->setPixmap(temp);
+    QString chemin_sauvegarde = dossier_projet + "/dessins/dessin" + QString::number(current_index + 1) + ".png";
+    dessin_courant->save(chemin_sauvegarde);
+    QPixmap dessin_temp = dessin_courant->get_image();
+    dessin_temp = dessin_temp.scaledToWidth(160,  Qt::FastTransformation);
+    mes_images.at(current_index)->setPixmap(dessin_temp);
+    mes_images.at(current_index)->set_path_dessin(chemin_sauvegarde.toStdString());
 }

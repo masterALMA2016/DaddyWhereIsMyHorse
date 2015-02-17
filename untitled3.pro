@@ -27,3 +27,5 @@ HEADERS  += \
     creationprojet.h
 
 FORMS    +=
+
+DISTFILES +=

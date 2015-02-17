@@ -43,28 +43,33 @@ public slots:
     void changer_taille_crayon(int taille);
     void utiliser_gomme();
     void utiliser_crayon();
-    void afficher(std::string path, std::string path2, int ind);
+    void afficher(std::string path_image_film, std::string path_dessin, int index);
     void save();
 
 private:
 
     void creation_menu();
     void importer_images();
+
     int current_index;
-    QComboBox *choix_taille_crayon;
+    int taille_crayon;
     int longueur_fenetre;
     int largeur_fenetre;
+
     QString frequence_video;
     QString dossier_projet;
-    Dessin *dessin_courant;
-    QPushButton *couleur;
-    QColor couleur_courante;
-    //barre de menu
-    QMenuBar *barre_menu;
-    QLabel *image_fond;
-    QScrollArea *scr;
+
     std::vector<ImageClickable*> mes_images;
-    std::vector<ImageClickable*> mes_dessins;
+
+    QLabel *image_fond;
+    Dessin *dessin_courant;
+    QColor couleur_courante;
+    QComboBox *choix_taille_crayon;
+    QPushButton *couleur;
+
+    QMenuBar *barre_menu;
+
+    QScrollArea *zone_de_travail;
     QVBoxLayout *layout_zone_images;
     QWidget *zone_images;
 };

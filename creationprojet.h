@@ -17,7 +17,7 @@ class CreationProjet: public QDialog
     Q_OBJECT
 
 public:
-    explicit CreationProjet(QWidget * parent=0);
+    explicit CreationProjet(QWidget * parent = 0);
     ~CreationProjet();
 
 public slots:

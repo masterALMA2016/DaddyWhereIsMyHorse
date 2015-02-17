@@ -1,8 +1,5 @@
 #include "accueil.h"
-#include <QVBoxLayout>
-#include <iostream>
-#include "projet.h"
-#include <creationprojet.h>
+
 Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 {
     longueur_fenetre = 1245;
@@ -18,7 +15,7 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     message_accueil->setGeometry(QRect(420, 300, 480, 80));
 
     QPixmap image("../DaddyWhereIsMyHorse/lecture.png");
-    image=image.scaledToWidth(20);
+    image = image.scaledToWidth(20);
     QIcon icone_bouton(image);
 
     nouveau_projet = new QPushButton("Nouveau projet", this);
@@ -51,6 +48,7 @@ Accueil::~Accueil()
     delete(charger_projet);
     delete(nouveau_projet);
     delete(message_accueil);
+    delete(probleme_ouverture_projet);
 }
 
 void Accueil::creer_projet(){
@@ -63,12 +61,16 @@ void Accueil::creer_projet(){
 void Accueil::ouvrir_projet(){
 
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
-    QDir dir(path+"/images_video");
-    if(!dir.exists()){
+    QFile file(path + "/dwimh.conf");
+    if(!file.exists()){
         probleme_ouverture_projet->setVisible(true);
     }
     else{
-        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, 0, path);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream flux(&file);
+        QString ligne;
+        ligne = flux.readLine();
+        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, ligne, path);
         projet->show();
         this->close();
     }
