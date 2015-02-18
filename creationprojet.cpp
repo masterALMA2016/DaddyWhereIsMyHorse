@@ -185,6 +185,8 @@ void CreationProjet::envoyer_informations(){
 
         dir_projet.mkdir("images_video");
         dir_projet.mkdir("dessins");
+        dir_projet.mkdir("calque");
+        dir_projet.mkdir("videos");
         dir_projet.cd("images_video");
         std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r " + choix_frequence->currentText().toStdString() + " " + dir_projet.path().toStdString() + "/image%03d.png";
         system(str.c_str());

@@ -41,6 +41,11 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
+
+
+
+
+
 }
 
 Accueil::~Accueil()
@@ -82,3 +87,4 @@ void Accueil::recuperer_informations(QString chemin_projet, QString frequence){
     projet->show();
     this->close();
 }
+

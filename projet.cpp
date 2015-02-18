@@ -1,6 +1,9 @@
 #include "projet.h"
 #include <string>
 #include <iomanip>
+#include <boost/lexical_cast.hpp>
+
+
 Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent), mes_pelures(5)
 {
     current_index = 0;
@@ -13,8 +16,6 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     //parametrage fenetre
     longueur_fenetre = x;
     largeur_fenetre = y;
-
-
 
 
     this->setWindowTitle("Projet");
@@ -85,6 +86,7 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
     QIcon icone_oeil(image_oeil);
     previsualisation->setIcon(icone_oeil);
     previsualisation->setIconSize(image_oeil.rect().size());
+    connect(previsualisation, SIGNAL(clicked()), this, SLOT(creation_previsualisation_rapide()));
 
     QPushButton *precedent = new QPushButton(this);
     precedent->setGeometry(scrollarea_zone_images->geometry().width() + 390, barre_menu->geometry().height(), 50, 40);
@@ -352,7 +354,7 @@ void Projet::importer_images(){
     chemin_image.setNameFilters(QStringList()<<"*.png");
     QStringList liste_images_film = chemin_image.entryList();
 
-    QDir chemin_dessin(dossier_projet+"/dessins");
+    QDir chemin_dessin(dossier_projet+"/calque");
     chemin_dessin.setNameFilters(QStringList()<<"*.png");
     QStringList liste_dessin = chemin_dessin.entryList();
 
@@ -360,9 +362,10 @@ void Projet::importer_images(){
 
         ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString(), i);
         connect(image, SIGNAL(clicked(std::string,std::string, int)), this, SLOT(afficher(std::string, std::string, int)));
-
-        if(liste_dessin.contains("dessin" + QString::number(i + 1) + ".png")){
-            image->changer_image(chemin_dessin.path() + "/dessin" + QString::number(i + 1) + ".png");
+        QString nom = liste_images_film.at(i);
+        nom = nom.replace(0, 5, "calque");
+        if(liste_dessin.contains( nom)){
+            image->changer_image(chemin_dessin.path() + "/" + nom);
         }
 
         layout_zone_images->addWidget(image);
@@ -392,23 +395,32 @@ void Projet::afficher(std::string path_image_film, std::string path_dessin, int 
 }
 
 void Projet::save(){
-    QString chemin_sauvegarde = dossier_projet + "/dessins/dessin" + QString::number(current_index + 1) + ".png";
-    dessin_courant->save(chemin_sauvegarde);
+
+    std::string zero = "";
+    int nb_zero = boost::lexical_cast<std::string>(mes_images.size()).length() - boost::lexical_cast<std::string>(current_index+1).length();
+    for(int i=0; i< nb_zero; i++){
+        zero+="0";
+    }
+
+    QString chemin_sauvegarde_dessin = dossier_projet + "/dessins/dessin" + zero.c_str() + QString::number(current_index + 1) + ".png";
+    QString chemin_sauvegarde_calque = dossier_projet + "/calque/calque" + zero.c_str() + QString::number(current_index + 1) + ".png";
+
+    dessin_courant->save(chemin_sauvegarde_dessin, chemin_sauvegarde_calque);
     QPixmap dessin_temp = dessin_courant->get_image();
     dessin_temp = dessin_temp.scaledToWidth(160,  Qt::FastTransformation);
     mes_images.at(current_index)->setPixmap(dessin_temp);
-    mes_images.at(current_index)->set_path_dessin(chemin_sauvegarde.toStdString());
+    mes_images.at(current_index)->set_path_dessin(chemin_sauvegarde_calque.toStdString());
 }
 
 void Projet::image_suivante(){
-    if(current_index < mes_images.size()){
+    if(current_index < mes_images.size()-1){
         current_index++;
         afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
     }
 }
 
 void Projet::image_precedente(){
-    if(current_index>=0){
+    if(current_index>0){
         current_index--;
         afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
     }
@@ -487,3 +499,14 @@ void Projet::action_changer_affichage_pelures_doignons(){
 void Projet::undo(){
     dessin_courant->undo();
 }
+
+void Projet::creation_previsualisation_rapide(){
+    //pour creer video
+    //ffmpeg -f image2 -r 6 -i dessin%03d.png -vcodec mpeg4 mavideo.avi
+
+
+    player = new Player("/home/Soge/Bureau/sans_nom/dessins/mavideo.avi");
+    player->show();
+
+}
+

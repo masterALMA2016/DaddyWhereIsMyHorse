@@ -24,8 +24,11 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDir>
+#include <QtMultimedia>
+#include <QVideoWidget>
 #include "dessin.h"
 #include "imageclickable.h"
+#include "player.h"
 
 class Projet: public QMainWindow
 {
@@ -52,6 +55,8 @@ public slots:
     void changer_affichage_pelures_doignons();
     void action_changer_affichage_pelures_doignons();
     void undo();
+    void creation_previsualisation_rapide();
+
 
 private:
 
@@ -91,6 +96,7 @@ private:
     QScrollArea *zone_de_travail;
     QVBoxLayout *layout_zone_images;
     QWidget *zone_images;
+    Player *player;
 };
 
 #endif // PROJET_H

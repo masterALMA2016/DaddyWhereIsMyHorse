@@ -29,6 +29,7 @@ public slots:
     void creer_projet();
     void recuperer_informations(QString chemin_projet, QString frequence);
 
+
 private:
 
     int longueur_fenetre;
@@ -39,6 +40,7 @@ private:
 
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
+
 
 };
 

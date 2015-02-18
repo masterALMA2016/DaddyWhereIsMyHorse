@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,7 +18,10 @@ SOURCES += main.cpp\
     imageclickable.cpp \
     dessin.cpp \
     creationprojet.cpp \
-    histo.cpp
+    histo.cpp \
+    player.cpp \
+    playercontrols.cpp \
+    videowidget.cpp
 
 HEADERS  += \
     accueil.h \
@@ -26,7 +29,10 @@ HEADERS  += \
     imageclickable.h \
     dessin.h \
     creationprojet.h \
-    histo.h
+    histo.h \
+    player.h \
+    playercontrols.h \
+    videowidget.h
 
 FORMS    +=
 

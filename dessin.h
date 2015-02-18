@@ -20,7 +20,7 @@ public:
     void set_utiliser_crayon(bool choix);
     void set_dessin(QPixmap image);
     void changer_taille_crayon(int nouvelle_taille);
-    void save(QString chemin);
+    void save(QString chemin_dessin, QString chemin_calque);
     void undo();
 
 protected:
