@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     histo.cpp \
     player.cpp \
     playercontrols.cpp \
-    videowidget.cpp
+    videowidget.cpp \
+    preferences.cpp
 
 HEADERS  += \
     accueil.h \
@@ -32,7 +33,8 @@ HEADERS  += \
     histo.h \
     player.h \
     playercontrols.h \
-    videowidget.h
+    videowidget.h \
+    preferences.h
 
 FORMS    +=
 

@@ -69,9 +69,12 @@ void Accueil::ouvrir_projet(){
     else{
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream flux(&file);
-        QString ligne;
-        ligne = flux.readLine();
-        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, ligne, path);
+        QString frequence_video = flux.readLine();
+        QString nb_pelures_doignons = flux.readLine();
+        QString frequence_pelures_doignons = flux.readLine();
+        QString nb_previsualisation = flux.readLine();
+        QString afficher_image_fond = flux.readLine();
+        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence_video, nb_pelures_doignons.toInt(), frequence_pelures_doignons.toInt(), nb_previsualisation.toInt(),  afficher_image_fond.toInt(), path);
         projet->show();
         this->close();
     }
@@ -79,7 +82,7 @@ void Accueil::ouvrir_projet(){
 
 void Accueil::recuperer_informations(QString chemin_projet, QString frequence){
 
-    Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence, chemin_projet);
+    Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence, 5, 1, 10, 0, chemin_projet);
     projet->show();
     this->close();
 }

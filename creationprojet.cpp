@@ -194,9 +194,18 @@ void CreationProjet::envoyer_informations(){
         configuration.setFileName("dwimh.conf");
         configuration.open(QIODevice::WriteOnly);
         configuration.write(choix_frequence->currentText().toStdString().c_str());
+        configuration.write("\n" );
+        configuration.write(QString::number(5).toStdString().c_str());
+        configuration.write("\n" );
+        configuration.write(QString::number(1).toStdString().c_str());
+        configuration.write("\n" );
+        configuration.write(QString::number(10).toStdString().c_str());
+        configuration.write("\n" );
+        configuration.write(QString::number(0).toStdString().c_str());
         nouveau_projet+="/dwimh.conf";
         configuration.copy(nouveau_projet );
         configuration.remove();
+        configuration.close();
         emit information_projet(nom_projet_dir.path(), choix_frequence->currentText());
         close();
     }

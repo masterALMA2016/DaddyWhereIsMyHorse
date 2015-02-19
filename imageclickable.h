@@ -19,6 +19,7 @@ public:
 
 signals:
     void clicked(std::string,std::string, int);
+
 protected:
     void mousePressEvent (QMouseEvent *event) ;
 

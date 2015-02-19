@@ -4,15 +4,16 @@
 #include <boost/lexical_cast.hpp>
 
 
-Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent):QMainWindow(parent), mes_pelures(5)
+Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new_frequence_pelures_doignons, int nb_previsualisation, bool afficher_image_fond, QString dossier, QWidget *parent):QMainWindow(parent), mes_pelures(10)
 {
     current_index = 0;
     taille_crayon = 4;
-    nombre_de_pelures_doignons = 5;
-    frequence_pelures_doignons = 1;
-    previsualisation_rapide = 10;
+    nombre_de_pelures_doignons = nb_pelures_doignons;
+    frequence_pelures_doignons = new_frequence_pelures_doignons;
+    previsualisation_rapide = nb_previsualisation;
     frequence_video = frequence;
     dossier_projet = dossier;
+    image_de_fond = afficher_image_fond;
     //parametrage fenetre
     longueur_fenetre = x;
     largeur_fenetre = y;
@@ -242,6 +243,7 @@ void Projet::creation_menu(){
     preference->setText(QString::fromUtf8("Préférences"));
     preference->setShortcut(QKeySequence("CTRL+P"));
     edition->addAction(preference);
+    connect(preference, SIGNAL(triggered()), this, SLOT(choisir_preferences()));
 
     edition->addSeparator();
 
@@ -469,7 +471,7 @@ void Projet::affichage_pelures_doigons(){
 
             painter_transparent.fillRect(pelure_transparente.rect(), QColor(0, 0, 0, transparence));
             painter_transparent.end();
-            transparence = transparence/2;
+            transparence = transparence - 20;
             nouvelle_pelure = pelure_transparente;
 
             mes_pelures.at(index_mes_pelures)->setPixmap(nouvelle_pelure);
@@ -508,8 +510,7 @@ void Projet::undo(){
 }
 
 void Projet::creation_previsualisation_rapide(){
-    //pour creer video
-    //ffmpeg -f image2 -r 6 -i dessin%03d.png -vcodec mpeg4 mavideo.avi
+
     QDir chemin_video(dossier_projet + "/videos");
     QDir chemin_dessins(dossier_projet + "/dessins");
     std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
@@ -520,3 +521,29 @@ void Projet::creation_previsualisation_rapide(){
 
 }
 
+void Projet::choisir_preferences(){
+    Preferences *p = new Preferences(nombre_de_pelures_doignons, frequence_pelures_doignons, previsualisation_rapide, image_de_fond, this);
+    connect(p, SIGNAL(information_projet(int,int,int,bool)), this, SLOT(maj_preferences(int,int,int,bool)));
+    p->show();
+}
+
+void Projet::maj_preferences(int new_nb_pelures_doignons, int new_frequences_pelures_doignons, int new_previsualisation, bool new_image_fond){
+    nombre_de_pelures_doignons = new_nb_pelures_doignons;
+    frequence_pelures_doignons = new_frequences_pelures_doignons;
+    previsualisation_rapide = new_previsualisation;
+    image_de_fond = new_image_fond;
+
+    QFile configuration(dossier_projet + "/dwimh.conf");
+    configuration.open(QIODevice::WriteOnly);
+    configuration.write(frequence_video.toStdString().c_str() );
+    configuration.write("\n" );
+    configuration.write(QString::number(nombre_de_pelures_doignons).toStdString().c_str());
+    configuration.write("\n" );
+    configuration.write(QString::number(frequence_pelures_doignons).toStdString().c_str());
+    configuration.write("\n" );
+    configuration.write(QString::number(previsualisation_rapide).toStdString().c_str());
+    configuration.write("\n" );
+    configuration.write(QString::number(image_de_fond).toStdString().c_str());
+    configuration.close();
+
+}

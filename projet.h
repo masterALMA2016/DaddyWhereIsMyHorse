@@ -29,6 +29,7 @@
 #include "dessin.h"
 #include "imageclickable.h"
 #include "player.h"
+#include "preferences.h"
 
 class Projet: public QMainWindow
 {
@@ -36,7 +37,7 @@ class Projet: public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Projet(int x, int y, QString frequence, QString dossier, QWidget *parent = 0);
+    explicit Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new_frequence_pelures_doignons, int nb_previsualisation, bool afficher_image_fond, QString dossier, QWidget *parent = 0);
     ~Projet();
     void affichage_pelures_doigons();
 
@@ -56,6 +57,8 @@ public slots:
     void action_changer_affichage_pelures_doignons();
     void undo();
     void creation_previsualisation_rapide();
+    void choisir_preferences();
+    void maj_preferences(int new_nb_pelures_doignons, int new_frequences_pelures_doignons, int new_previsualisation, bool new_image_fond);
 
 
 private:
@@ -72,6 +75,7 @@ private:
     int frequence_pelures_doignons;
     int previsualisation_rapide;
 
+    bool image_de_fond;
 
     QString frequence_video;
     QString dossier_projet;
