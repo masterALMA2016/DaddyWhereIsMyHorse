@@ -5,13 +5,15 @@
 #include <QStyle>
 #include <QToolButton>
 #include <QComboBox>
-
-PlayerControls::PlayerControls(QWidget *parent): QWidget(parent), playerState(QMediaPlayer::StoppedState), playButton(0), stopButton(0), rateBox(0)
+#include <iostream>
+PlayerControls::PlayerControls(QWidget *parent): QWidget(parent), playerState(QMediaPlayer::StoppedState), playButton(0), stopButton(0)
 {
     playButton = new QToolButton(this);
     playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
 
     connect(playButton, SIGNAL(clicked()), this, SLOT(playClicked()));
+
+    choix_replay = true;
 
     stopButton = new QToolButton(this);
     stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
@@ -19,27 +21,27 @@ PlayerControls::PlayerControls(QWidget *parent): QWidget(parent), playerState(QM
 
     connect(stopButton, SIGNAL(clicked()), this, SIGNAL(stop()));
 
+    replayButton = new QToolButton(this);
+    replayButton->setEnabled(true);
+    QPixmap image_replay("../DaddyWhereIsMyHorse/replay.png");
+    QIcon icone_replay(image_replay);
+    replayButton->setIcon(icone_replay);
+    replayButton->setDown(choix_replay);
 
-    rateBox = new QComboBox(this);
-    rateBox->addItem("0.5x", QVariant(0.5));
-    rateBox->addItem("1.0x", QVariant(1.0));
-    rateBox->addItem("2.0x", QVariant(2.0));
-    rateBox->setCurrentIndex(1);
-
-    connect(rateBox, SIGNAL(activated(int)), SLOT(updateRate()));
+    connect(replayButton, SIGNAL(clicked()), this, SLOT(replay_inf()));
 
     QBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
     layout->addWidget(stopButton);
     layout->addWidget(playButton);
-    layout->addWidget(rateBox);
+    layout->addWidget(replayButton);
     setLayout(layout);
 }
 
 PlayerControls::~PlayerControls(){
     delete(playButton);
     delete(stopButton);
-    delete(replay);
+    delete(replayButton);
 }
 
 QMediaPlayer::State PlayerControls::state() const
@@ -49,21 +51,30 @@ QMediaPlayer::State PlayerControls::state() const
 
 void PlayerControls::setState(QMediaPlayer::State state)
 {
-    if (state != playerState) {
-        playerState = state;
+    if (state != playerState ) {
 
         switch (state) {
-        case QMediaPlayer::StoppedState:
+        case QMediaPlayer::StoppedState :
+
             stopButton->setEnabled(false);
             playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+            playerState = state;
+            if(choix_replay){
+                setState(QMediaPlayer::PlayingState);
+                emit play();
+            }
             break;
         case QMediaPlayer::PlayingState:
             stopButton->setEnabled(true);
             playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+            playerState = state;
+
             break;
         case QMediaPlayer::PausedState:
             stopButton->setEnabled(true);
             playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+            playerState = state;
+
             break;
         }
     }
@@ -71,8 +82,7 @@ void PlayerControls::setState(QMediaPlayer::State state)
 
 
 void PlayerControls::playClicked()
-{
-    switch (playerState) {
+{    switch (playerState) {
     case QMediaPlayer::StoppedState:
     case QMediaPlayer::PausedState:
         emit play();
@@ -83,27 +93,7 @@ void PlayerControls::playClicked()
     }
 }
 
-
-
-qreal PlayerControls::playbackRate() const
-{
-    return rateBox->itemData(rateBox->currentIndex()).toDouble();
-}
-
-void PlayerControls::setPlaybackRate(float rate)
-{
-    for (int i = 0; i < rateBox->count(); ++i) {
-        if (qFuzzyCompare(rate, float(rateBox->itemData(i).toDouble()))) {
-            rateBox->setCurrentIndex(i);
-            return;
-        }
-    }
-
-    rateBox->addItem(QString("%1x").arg(rate), QVariant(rate));
-    rateBox->setCurrentIndex(rateBox->count() - 1);
-}
-
-void PlayerControls::updateRate()
-{
-    emit changeRate(playbackRate());
+void PlayerControls::replay_inf(){
+    choix_replay = !choix_replay;
+    replayButton->setDown(choix_replay);
 }

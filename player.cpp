@@ -26,10 +26,7 @@ Player::Player(QString chemin_video, QWidget *parent): QWidget(parent), videoWid
     connect(controls, SIGNAL(play()), player, SLOT(play()));
     connect(controls, SIGNAL(pause()), player, SLOT(pause()));
     connect(controls, SIGNAL(stop()), player, SLOT(stop()));
-    connect(controls, SIGNAL(changeRate(qreal)), player, SLOT(setPlaybackRate(qreal)));
-
     connect(controls, SIGNAL(stop()), videoWidget, SLOT(update()));
-
     connect(player, SIGNAL(stateChanged(QMediaPlayer::State)),
             controls, SLOT(setState(QMediaPlayer::State)));
 

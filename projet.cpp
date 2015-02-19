@@ -176,16 +176,16 @@ Projet::Projet(int x, int y, QString frequence, QString dossier, QWidget *parent
         diametre_crayon += 4;
     }
 
-    changer_taille_crayon(taille_crayon);
+    changer_taille_crayon();
 
     choix_taille_crayon->setIconSize(QSize(50, 50));
     choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
 
-    connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon(int)));
+    connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon()));
     connect(sauvegarder, SIGNAL(clicked()), this, SLOT(save()));
 
     image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
-    for(int i = 0; i < mes_pelures.size(); i++){
+    for(unsigned int i = 0; i < mes_pelures.size(); i++){
         mes_pelures.at(i)->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
     }
     zone_de_travail->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
@@ -273,6 +273,8 @@ void Projet::creation_menu(){
     previsualisation_rapide->setText(QString::fromUtf8("Prévisualisation rapide"));
     previsualisation_rapide->setShortcut(QKeySequence("CTRL+R"));
     edition->addAction(previsualisation_rapide);
+    connect(previsualisation_rapide, SIGNAL(triggered()), this, SLOT(creation_previsualisation_rapide()));
+
 
     QAction *suivant = new QAction(this);
     suivant->setText(QString::fromUtf8("Suivant"));
@@ -313,7 +315,7 @@ Projet::~Projet()
     delete(zone_images);
     delete(scrollarea_zone_images);
 
-    for(int i = 0; i<mes_images.size(); i++){
+    for(unsigned int i = 0; i<mes_images.size(); i++){
         delete(mes_images.at(i));
     }
 }
@@ -334,7 +336,7 @@ void Projet::couleur_choisie(QColor nouvelle_couleur){
     couleur_courante=nouvelle_couleur;
 }
 
-void Projet::changer_taille_crayon(int taille){
+void Projet::changer_taille_crayon(){
     QString nouvelle_taille = choix_taille_crayon->currentText();
     dessin_courant->changer_taille_crayon(nouvelle_taille.toInt());
     taille_crayon = nouvelle_taille.toInt();
@@ -428,7 +430,7 @@ void Projet::image_precedente(){
 
 void Projet::changer_affichage_image(){
     image_fond->setVisible(!image_fond->isVisible());
-    for(int i = 0; i<mes_images.size(); i++){
+    for(unsigned int i = 0; i<mes_images.size(); i++){
         mes_images.at(i)->set_affichage_image(!image_fond->isVisible());
     }
     if(image_fond->isVisible()!=afficher_image->isChecked()){
@@ -438,7 +440,7 @@ void Projet::changer_affichage_image(){
 
 void Projet::changer_affichage_dessin(){
     dessin_courant->setVisible(!dessin_courant->isVisible());
-    for(int i = 0; i<mes_images.size(); i++){
+    for(unsigned int i = 0; i<mes_images.size(); i++){
         mes_images.at(i)->set_affichage_dessin(dessin_courant->isVisible());
     }
     if(dessin_courant->isVisible()!=afficher_dessin->isChecked()){
@@ -451,7 +453,9 @@ void Projet::affichage_pelures_doigons(){
     int max = nombre_de_pelures_doignons;
     int transparence = 200;
     int index_mes_pelures = 0;
-    while(i > 0 && max != 0 && mes_pelures.size() > index_mes_pelures){
+
+
+    while(i >= 0 && max != 0 && mes_pelures.size() > index_mes_pelures){
         if(!mes_images.at(i)->get_path_dessin().empty()){
 
             QPixmap nouvelle_pelure(mes_images.at(i)->get_path_dessin().c_str());
@@ -474,10 +478,13 @@ void Projet::affichage_pelures_doigons(){
         }
         i = i - frequence_pelures_doignons;
     }
+    for(unsigned int j = index_mes_pelures; j<mes_pelures.size(); j++){
+        mes_pelures.at(j)->setPixmap(QPixmap());
+    }
 }
 
 void Projet::initialistaion_mes_pelures_doignons(){
-    for(int i = 0; i < mes_pelures.size(); i++){
+    for(unsigned int i = 0; i < mes_pelures.size(); i++){
         QLabel *temp = new QLabel(this);
         temp->setAlignment(Qt::AlignCenter);
         temp->setVisible(false);
@@ -486,7 +493,7 @@ void Projet::initialistaion_mes_pelures_doignons(){
 }
 
 void Projet::changer_affichage_pelures_doignons(){
-    for(int i = 0; i<mes_pelures.size(); i++){
+    for(unsigned int i = 0; i<mes_pelures.size(); i++){
         mes_pelures.at(i)->setVisible(afficher_pelures_doigons->isChecked());
     }
 }
@@ -503,9 +510,12 @@ void Projet::undo(){
 void Projet::creation_previsualisation_rapide(){
     //pour creer video
     //ffmpeg -f image2 -r 6 -i dessin%03d.png -vcodec mpeg4 mavideo.avi
-
-
-    player = new Player("/home/Soge/Bureau/sans_nom/dessins/mavideo.avi");
+    QDir chemin_video(dossier_projet + "/videos");
+    QDir chemin_dessins(dossier_projet + "/dessins");
+    std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
+    std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + chemin_dessins.path().toStdString() + "/dessin%0" + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/previsualisation.avi";
+    system(str.c_str());
+    player = new Player(chemin_video.path() + "/previsualisation.avi");
     player->show();
 
 }

@@ -43,7 +43,7 @@ public:
 public slots:
     void changer_couleur();
     void couleur_choisie(QColor nouvelle_couleur);
-    void changer_taille_crayon(int taille);
+    void changer_taille_crayon();
     void utiliser_gomme();
     void utiliser_crayon();
     void afficher(std::string path_image_film, std::string path_dessin, int index);
