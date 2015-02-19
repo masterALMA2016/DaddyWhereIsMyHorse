@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     player.cpp \
     playercontrols.cpp \
     videowidget.cpp \
-    preferences.cpp
+    preferences.cpp \
+    erreur.cpp
 
 HEADERS  += \
     accueil.h \
@@ -34,7 +35,8 @@ HEADERS  += \
     player.h \
     playercontrols.h \
     videowidget.h \
-    preferences.h
+    preferences.h \
+    erreur.h
 
 FORMS    +=
 

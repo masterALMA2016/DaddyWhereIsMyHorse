@@ -30,6 +30,8 @@
 #include "imageclickable.h"
 #include "player.h"
 #include "preferences.h"
+#include "creationprojet.h"
+#include "erreur.h"
 
 class Projet: public QMainWindow
 {
@@ -59,13 +61,18 @@ public slots:
     void creation_previsualisation_rapide();
     void choisir_preferences();
     void maj_preferences(int new_nb_pelures_doignons, int new_frequences_pelures_doignons, int new_previsualisation, bool new_image_fond);
-
+    void nouveau_projet();
+    void recuperer_informations(QString chemin_projet, QString frequence);
+    void ouvrir_projet();
+    void apercu_video();
+    void exporter_video();
 
 private:
 
     void creation_menu();
     void importer_images();
     void initialistaion_mes_pelures_doignons();
+    QString creer_ma_video();
 
     int current_index;
     int taille_crayon;

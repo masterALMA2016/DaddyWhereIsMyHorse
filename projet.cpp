@@ -208,11 +208,13 @@ void Projet::creation_menu(){
     nouveau->setText(QString::fromUtf8("Nouveau"));
     nouveau->setShortcut(QKeySequence("CTRL+N"));
     fichier->addAction(nouveau);
+    connect(nouveau, SIGNAL(triggered()), this, SLOT(nouveau_projet()));
 
     QAction *ouvrir = new QAction(this);
     ouvrir->setText(QString::fromUtf8("Ouvrir"));
     ouvrir->setShortcut(QKeySequence("CTRL+O"));
     fichier->addAction(ouvrir);
+    connect(ouvrir, SIGNAL(triggered()), this, SLOT(ouvrir_projet()));
 
     QAction *enregistrer = new QAction(this);
     enregistrer->setText(QString::fromUtf8("Enregistrer"));
@@ -221,9 +223,10 @@ void Projet::creation_menu(){
     connect(enregistrer, SIGNAL(triggered()), this, SLOT(save()));
 
     QAction *exporter_la_video = new QAction(this);
-    exporter_la_video->setText(QString::fromUtf8("Exporter la viéo"));
+    exporter_la_video->setText(QString::fromUtf8("Exporter la vidéo"));
     exporter_la_video->setShortcut(QKeySequence("CTRL+V"));
     fichier->addAction(exporter_la_video);
+    connect(exporter_la_video, SIGNAL(triggered()), this, SLOT(exporter_video()));
 
     QAction *exporter_les_images = new QAction(this);
     exporter_les_images->setText(QString::fromUtf8("Exporter les images"));
@@ -232,8 +235,9 @@ void Projet::creation_menu(){
 
     QAction *apercu = new QAction(this);
     apercu->setText(QString::fromUtf8("Aperçu"));
-    apercu->setShortcut(QKeySequence("CTRL+N"));
+    apercu->setShortcut(QKeySequence("CTRL+A"));
     fichier->addAction(apercu);
+    connect(apercu, SIGNAL(triggered()), this, SLOT(apercu_video()));
 
     //menu edition
     QMenu *edition = new QMenu("Edition");
@@ -546,4 +550,67 @@ void Projet::maj_preferences(int new_nb_pelures_doignons, int new_frequences_pel
     configuration.write(QString::number(image_de_fond).toStdString().c_str());
     configuration.close();
 
+}
+
+void Projet::nouveau_projet(){
+    CreationProjet *cp = new CreationProjet(this);
+    connect(cp, SIGNAL(information_projet(QString, QString)), this, SLOT(recuperer_informations(QString, QString )));
+    cp->show();
+}
+
+void Projet::recuperer_informations(QString chemin_projet, QString frequence){
+
+    Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence, 5, 1, 10, 0, chemin_projet);
+    projet->show();
+}
+
+void Projet::ouvrir_projet(){
+
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
+    QFile file(path + "/dwimh.conf");
+    if(!file.exists()){
+        Erreur *erreur = new Erreur(this);
+        erreur->show();
+
+    }
+    else{
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream flux(&file);
+        QString frequence_video = flux.readLine();
+        QString nb_pelures_doignons = flux.readLine();
+        QString frequence_pelures_doignons = flux.readLine();
+        QString nb_previsualisation = flux.readLine();
+        QString afficher_image_fond = flux.readLine();
+        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence_video, nb_pelures_doignons.toInt(), frequence_pelures_doignons.toInt(), nb_previsualisation.toInt(),  afficher_image_fond.toInt(), path);
+        projet->show();
+    }
+}
+
+void Projet::apercu_video(){
+    QString chemin_video = creer_ma_video();
+    player = new Player(chemin_video + "/ma_video.avi");
+    player->show();
+}
+
+void Projet::exporter_video(){
+
+    creer_ma_video();
+
+    QString dir_save = QDir::home().path() + "/DaddyWhereIsMyHorse.avi";
+    QString save_here = QFileDialog::getSaveFileName(this, tr("Save File"),  dir_save);
+
+    QDir dir_projet(dossier_projet);
+    dir_projet.cd("videos");
+
+    QFile ma_video(dir_projet.path()+"/ma_video.avi");
+    bool t = ma_video.copy(save_here);
+}
+
+QString Projet::creer_ma_video(){
+    QDir chemin_video(dossier_projet + "/videos");
+    QDir chemin_dessins(dossier_projet + "/dessins");
+    std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
+    std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + chemin_dessins.path().toStdString() + "/dessin%0" + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/ma_video.avi";
+    system(str.c_str());
+    return chemin_video.path();
 }
