@@ -66,6 +66,7 @@ public slots:
     void ouvrir_projet();
     void apercu_video();
     void exporter_video();
+    void exporter_les_dessins();
 
 private:
 
@@ -81,6 +82,7 @@ private:
     int nombre_de_pelures_doignons;
     int frequence_pelures_doignons;
     int previsualisation_rapide;
+    int numero_derniere_image;
 
     bool image_de_fond;
 

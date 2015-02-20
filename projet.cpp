@@ -8,6 +8,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 {
     current_index = 0;
     taille_crayon = 4;
+    numero_derniere_image = 1;
     nombre_de_pelures_doignons = nb_pelures_doignons;
     frequence_pelures_doignons = new_frequence_pelures_doignons;
     previsualisation_rapide = nb_previsualisation;
@@ -232,6 +233,7 @@ void Projet::creation_menu(){
     exporter_les_images->setText(QString::fromUtf8("Exporter les images"));
     exporter_les_images->setShortcut(QKeySequence("CTRL+I"));
     fichier->addAction(exporter_les_images);
+    connect(exporter_les_images, SIGNAL(triggered()), this, SLOT(exporter_les_dessins()));
 
     QAction *apercu = new QAction(this);
     apercu->setText(QString::fromUtf8("Aperçu"));
@@ -374,6 +376,7 @@ void Projet::importer_images(){
         nom = nom.replace(0, 5, "calque");
         if(liste_dessin.contains( nom)){
             image->changer_image(chemin_dessin.path() + "/" + nom);
+            numero_derniere_image = i+1;
         }
 
         layout_zone_images->addWidget(image);
@@ -409,11 +412,15 @@ void Projet::save(){
     for(int i=0; i< nb_zero; i++){
         zero+="0";
     }
-
+    if(current_index+1 > numero_derniere_image){
+        numero_derniere_image = current_index +1;
+    }
     QString chemin_sauvegarde_dessin = dossier_projet + "/dessins/dessin" + zero.c_str() + QString::number(current_index + 1) + ".png";
     QString chemin_sauvegarde_calque = dossier_projet + "/calque/calque" + zero.c_str() + QString::number(current_index + 1) + ".png";
+    QString chemin_sauvegarde_avec_fond = dossier_projet + "/dessin_image_film/dessin_image_film" + zero.c_str() + QString::number(current_index + 1) + ".png";
 
-    dessin_courant->save(chemin_sauvegarde_dessin, chemin_sauvegarde_calque);
+    dessin_courant->save(chemin_sauvegarde_dessin, chemin_sauvegarde_calque, mes_images.at(current_index)->get_path_image_film(), chemin_sauvegarde_avec_fond.toStdString());
+
     QPixmap dessin_temp = dessin_courant->get_image();
     dessin_temp = dessin_temp.scaledToWidth(160,  Qt::FastTransformation);
     mes_images.at(current_index)->setPixmap(dessin_temp);
@@ -518,7 +525,19 @@ void Projet::creation_previsualisation_rapide(){
     QDir chemin_video(dossier_projet + "/videos");
     QDir chemin_dessins(dossier_projet + "/dessins");
     std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
-    std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + chemin_dessins.path().toStdString() + "/dessin%0" + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/previsualisation.avi";
+
+    std::string path_a_utiliser = chemin_dessins.path().toStdString() + "/dessin%0";
+    if(image_de_fond){
+        QDir chemin_dessins_video(dossier_projet + "/dessin_image_film");
+
+        path_a_utiliser = chemin_dessins_video.path().toStdString() + "/dessin_image_film%0";;
+    }
+    int premiere_image = numero_derniere_image+1 - previsualisation_rapide;
+    std::cout<<premiere_image<<std::endl;
+    if(premiere_image<0){
+        premiere_image = 0;
+    }
+    std::string str = "ffmpeg -y -f image2 -start_number " + boost::lexical_cast<std::string>(premiere_image) + " -r " + frequence_video.toStdString() + " -i " + path_a_utiliser + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/previsualisation.avi";
     system(str.c_str());
     player = new Player(chemin_video.path() + "/previsualisation.avi");
     player->show();
@@ -603,14 +622,28 @@ void Projet::exporter_video(){
     dir_projet.cd("videos");
 
     QFile ma_video(dir_projet.path()+"/ma_video.avi");
-    bool t = ma_video.copy(save_here);
+    ma_video.copy(save_here);
 }
+
+void Projet::exporter_les_dessins(){
+    QString dir_save = QDir::home().path();
+    QString save_here = QFileDialog::getExistingDirectory(this, tr("choisir un répertoire"),  dir_save, QFileDialog::ShowDirsOnly);
+    std::string copier = "cp -R " + dossier_projet.toStdString() + "/dessins " + save_here.toStdString() + "/DessinsDaddyWhereIsMyHorse";
+    system(copier.c_str());
+}
+
 
 QString Projet::creer_ma_video(){
     QDir chemin_video(dossier_projet + "/videos");
     QDir chemin_dessins(dossier_projet + "/dessins");
     std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
-    std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + chemin_dessins.path().toStdString() + "/dessin%0" + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/ma_video.avi";
+    std::string path_a_utiliser = chemin_dessins.path().toStdString() + "/dessin%0";
+    if(image_de_fond){
+        QDir chemin_dessins_video(dossier_projet + "/dessin_image_film");
+
+        path_a_utiliser = chemin_dessins_video.path().toStdString() + "/dessin_image_film%0";;
+    }
+    std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + path_a_utiliser + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/ma_video.avi";
     system(str.c_str());
     return chemin_video.path();
 }

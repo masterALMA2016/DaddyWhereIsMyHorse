@@ -109,13 +109,18 @@ void Dessin::set_utiliser_crayon(bool choix){
     setCursor(curseur);
 }
 
-void Dessin::save(QString chemin_dessin, QString chemin_calque){
+void Dessin::save(QString chemin_dessin, QString chemin_calque, std::string chemin_image_film, std::string chemin_dessin_film){
     QPixmap temp(dessin.width(), dessin.height());
     temp.fill(Qt::white);
     QPainter paint(&temp);
     paint.drawPixmap(temp.rect(), dessin, dessin.rect());
     temp.save(chemin_dessin, "PNG");
     dessin.save(chemin_calque, "PNG");
+
+    QPixmap temp2(chemin_image_film.c_str());
+    QPainter paint2(&temp2);
+    paint2.drawPixmap(temp.rect(), dessin, dessin.rect());
+    temp2.save(chemin_dessin_film.c_str(), "PNG");
 }
 
 QPixmap Dessin::get_image(){
