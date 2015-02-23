@@ -3,7 +3,7 @@
 Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 {
     longueur_fenetre = 1245;
-    largeur_fenetre = 883;
+    largeur_fenetre = 800;
 
     this->setWindowTitle("Accueil");
     this->setMinimumSize(longueur_fenetre,largeur_fenetre);
@@ -61,12 +61,16 @@ void Accueil::creer_projet(){
 
 void Accueil::ouvrir_projet(){
 
-    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
+    //QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
+    QFileDialog *test = new QFileDialog(this, QDir::home().path());
+    QString path = test->getExistingDirectory();
     QFile file(path + "/dwimh.conf");
+
     if(!file.exists()){
         probleme_ouverture_projet->setVisible(true);
     }
     else{
+
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream flux(&file);
         QString frequence_video = flux.readLine();
@@ -81,7 +85,6 @@ void Accueil::ouvrir_projet(){
 }
 
 void Accueil::recuperer_informations(QString chemin_projet, QString frequence){
-
     Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence, 5, 1, 10, 0, chemin_projet);
     projet->show();
     this->close();

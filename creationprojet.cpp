@@ -1,7 +1,9 @@
 ﻿#include "creationprojet.h"
 #include <iostream>
+
 CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 {
+
   setWindowTitle("Nouveau Projet");
   setMinimumSize(830,520);
   setMaximumSize(830, 520);
@@ -143,7 +145,6 @@ CreationProjet::~CreationProjet()
 }
 
 void CreationProjet::envoyer_informations(){
-
     QFile video_dir(chemin_video->text());
     bool chemin_video_existe = video_dir.exists() && !chemin_video->text().isEmpty() ;
 

@@ -36,7 +36,6 @@ private:
     QLabel *probleme_chemin_projet;
     QLabel *probleme_nom_projet;
     QLabel *probleme_chemin_video;
-
 };
 
 #endif // CREERPROJET_H

@@ -67,6 +67,7 @@ public slots:
     void apercu_video();
     void exporter_video();
     void exporter_les_dessins();
+    void test(QModelIndex index);
 
 private:
 
@@ -103,6 +104,8 @@ private:
     QCheckBox *afficher_image;
 
     QScrollArea *scrollarea_zone_images;
+
+    QListWidget *mes_label;
 
     QMenuBar *barre_menu;
 

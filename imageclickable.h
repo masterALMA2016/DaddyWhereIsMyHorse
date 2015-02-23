@@ -17,11 +17,11 @@ public:
     void set_affichage_image(bool choix);
     void set_affichage_dessin(bool choix);
 
-signals:
-    void clicked(std::string,std::string, int);
+/*signals:
+    void clicked(std::string,std::string, int);*/
 
-protected:
-    void mousePressEvent (QMouseEvent *event) ;
+/*protected:
+    void mousePressEvent (QMouseEvent *event) ;*/
 
 private:
     std::string path_image_film;

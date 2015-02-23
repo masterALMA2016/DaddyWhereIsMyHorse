@@ -3,6 +3,7 @@
 Player::Player(QString chemin_video, QWidget *parent): QWidget(parent), videoWidget(0), slider(0)
 
 {
+    setWindowTitle("HorseMedia");
     player = new QMediaPlayer(this);
     player->setMedia(QUrl::fromLocalFile(chemin_video));
     setGeometry(100, 100, 500, 300);

@@ -5,23 +5,23 @@ ImageClickable::ImageClickable(std::string nouveau_path_image_film, int index, Q
     this->index = index;
     path_image_film = nouveau_path_image_film;
     path_dessin = "";
-
     QPixmap image_film_temp(nouveau_path_image_film.c_str());
     image_film_temp = image_film_temp.scaledToWidth(160,  Qt::FastTransformation);
-    std::string option_image_de_fond ="border-image: url(" + path_image_film + ")";
+    std::string option_image_de_fond ="border-image: url(" + path_image_film + "); QStatusBar::item { border: 5px solid black };";
 
     this->setMinimumSize(image_film_temp.width(), image_film_temp.height());
     this->setMaximumSize(image_film_temp.width(), image_film_temp.height());
     this->setStyleSheet(option_image_de_fond.c_str());
+
 }
 
 ImageClickable::~ImageClickable()
 {
 }
 
-void ImageClickable::mousePressEvent (QMouseEvent * event){
+/*void ImageClickable::mousePressEvent (QMouseEvent * event){
     emit clicked(this->path_image_film, this->path_dessin, this->index);
-}
+}*/
 
 std::string ImageClickable::get_path_image_film(){
     return path_image_film;

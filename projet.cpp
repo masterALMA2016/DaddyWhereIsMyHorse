@@ -19,25 +19,23 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     longueur_fenetre = x;
     largeur_fenetre = y;
 
-
     this->setWindowTitle("Projet");
     this->setMinimumSize(longueur_fenetre,largeur_fenetre);
     this->setMaximumSize(longueur_fenetre,largeur_fenetre);
 
     creation_menu();
 
-    scrollarea_zone_images = new QScrollArea(this);
-    layout_zone_images = new QVBoxLayout();
+    mes_label = new QListWidget(this);
     importer_images();
+    mes_label->setCurrentRow(current_index);
 
-    zone_images = new QWidget(this);
-    zone_images->setLayout(layout_zone_images);
-    scrollarea_zone_images->setWidget(zone_images);
-    scrollarea_zone_images->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
 
+    connect(mes_label, SIGNAL(clicked(QModelIndex)), this, SLOT(test(QModelIndex)));
+
+    mes_label->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
-    image_fond->setStyleSheet("background-color: transparent");
+    image_fond->setStyleSheet("background-color: #7e7e7e");
 
     initialistaion_mes_pelures_doignons();
 
@@ -65,24 +63,24 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     afficher_image = new QCheckBox(this);
     afficher_image->setText("Afficher image");
-    afficher_image->setGeometry(scrollarea_zone_images->geometry().width() + 10, barre_menu->geometry().height(), 120, 20);
+    afficher_image->setGeometry(mes_label->geometry().width() + 10, barre_menu->geometry().height(), 120, 20);
     afficher_image->setChecked(true);
     connect(afficher_image, SIGNAL(clicked()), this, SLOT(changer_affichage_image()));
 
 
     afficher_dessin = new QCheckBox(this);
     afficher_dessin->setText("Afficher dessin");
-    afficher_dessin->setGeometry(scrollarea_zone_images->geometry().width() + 10, barre_menu->geometry().height() + 20, 120, 20);
+    afficher_dessin->setGeometry(mes_label->geometry().width() + 10, barre_menu->geometry().height() + 20, 120, 20);
     afficher_dessin->setChecked(true);
     connect(afficher_dessin, SIGNAL(clicked()), this, SLOT(changer_affichage_dessin()));
 
     afficher_pelures_doigons = new QCheckBox(this);
     afficher_pelures_doigons->setText("Afficher pelures d'oigons");
-    afficher_pelures_doigons->setGeometry(scrollarea_zone_images->geometry().width() + 130, barre_menu->geometry().height(), 190, 20);
+    afficher_pelures_doigons->setGeometry(mes_label->geometry().width() + 130, barre_menu->geometry().height(), 190, 20);
     connect(afficher_pelures_doigons, SIGNAL(clicked()), this, SLOT(changer_affichage_pelures_doignons()));
 
     QPushButton *previsualisation = new QPushButton(this);
-    previsualisation->setGeometry(scrollarea_zone_images->geometry().width() + 330, barre_menu->geometry().height(), 50, 40);
+    previsualisation->setGeometry(longueur_fenetre - 560, barre_menu->geometry().height(), 50, 40);
     QPixmap image_oeil("../DaddyWhereIsMyHorse/oeil.png");
     image_oeil = image_oeil.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_oeil(image_oeil);
@@ -91,7 +89,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     connect(previsualisation, SIGNAL(clicked()), this, SLOT(creation_previsualisation_rapide()));
 
     QPushButton *precedent = new QPushButton(this);
-    precedent->setGeometry(scrollarea_zone_images->geometry().width() + 390, barre_menu->geometry().height(), 50, 40);
+    precedent->setGeometry(longueur_fenetre - 500, barre_menu->geometry().height(), 50, 40);
     QPixmap image_precedent("../DaddyWhereIsMyHorse/fleche_gauche.png");
     image_precedent = image_precedent.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_precedent(image_precedent);
@@ -101,7 +99,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
 
     QPushButton *suivant = new QPushButton(this);
-    suivant->setGeometry(scrollarea_zone_images->geometry().width()+450, barre_menu->geometry().height(), 50, 40);
+    suivant->setGeometry(longueur_fenetre - 440, barre_menu->geometry().height(), 50, 40);
     QPixmap image_suivant("../DaddyWhereIsMyHorse/fleche_droite.png");
     image_suivant = image_suivant.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_suivant(image_suivant);
@@ -111,7 +109,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
 
     QPushButton *sauvegarder = new QPushButton(this);
-    sauvegarder->setGeometry(scrollarea_zone_images->geometry().width()+510, barre_menu->geometry().height(), 50, 40);
+    sauvegarder->setGeometry(longueur_fenetre - 380, barre_menu->geometry().height(), 50, 40);
     QPixmap image_sauvegarder("../DaddyWhereIsMyHorse/sauvegarder.png");
     image_sauvegarder = image_sauvegarder.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_sauvegarder(image_sauvegarder);
@@ -119,7 +117,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     sauvegarder->setIconSize(image_sauvegarder.rect().size());
 
     QPushButton *undo = new QPushButton(this);
-    undo->setGeometry(scrollarea_zone_images->geometry().width()+570, barre_menu->geometry().height(), 50, 40);
+    undo->setGeometry(longueur_fenetre - 320, barre_menu->geometry().height(), 50, 40);
     QPixmap image_undo("../DaddyWhereIsMyHorse/undo.png");
     image_undo = image_undo.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_undo(image_undo);
@@ -129,13 +127,13 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     //pour la couleur du crayon
     couleur = new QPushButton(this);
-    couleur->setGeometry(scrollarea_zone_images->geometry().width()+630, barre_menu->geometry().height() ,50 ,40);
+    couleur->setGeometry(longueur_fenetre - 260, barre_menu->geometry().height() ,50 ,40);
     couleur->setStyleSheet("background: black");
     connect(couleur, SIGNAL(clicked()), this, SLOT(changer_couleur()));
 
     //pour utiliser le crayon
     QPushButton *crayon = new QPushButton(this);
-    crayon->setGeometry(scrollarea_zone_images->geometry().width()+690, barre_menu->geometry().height(), 50, 40);
+    crayon->setGeometry(longueur_fenetre - 200, barre_menu->geometry().height(), 50, 40);
     QPixmap image_crayon("../DaddyWhereIsMyHorse/crayon.png");
     image_crayon = image_crayon.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_crayon(image_crayon);
@@ -145,7 +143,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     //pour utiliser la gomme
     QPushButton *gomme = new QPushButton(this);
-    gomme->setGeometry(scrollarea_zone_images->geometry().width()+750, barre_menu->geometry().height(), 50, 40);
+    gomme->setGeometry(longueur_fenetre - 140, barre_menu->geometry().height(), 50, 40);
     QPixmap image_gomme("../DaddyWhereIsMyHorse/gomme.png");
     image_gomme = image_gomme.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_gomme(image_gomme);
@@ -181,16 +179,16 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     changer_taille_crayon();
 
     choix_taille_crayon->setIconSize(QSize(50, 50));
-    choix_taille_crayon->setGeometry(scrollarea_zone_images->geometry().width()+810, barre_menu->geometry().height(), 70, 40);
+    choix_taille_crayon->setGeometry(longueur_fenetre-80, barre_menu->geometry().height(), 70, 40);
 
     connect(choix_taille_crayon, SIGNAL(currentIndexChanged(int)), this, SLOT(changer_taille_crayon()));
     connect(sauvegarder, SIGNAL(clicked()), this, SLOT(save()));
 
-    image_fond->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+    image_fond->setGeometry(mes_label->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-mes_label->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
     for(unsigned int i = 0; i < mes_pelures.size(); i++){
-        mes_pelures.at(i)->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+        mes_pelures.at(i)->setGeometry(mes_label->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-mes_label->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
     }
-    zone_de_travail->setGeometry(scrollarea_zone_images->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-scrollarea_zone_images->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
+    zone_de_travail->setGeometry(mes_label->geometry().width(), barre_menu->geometry().height()+50, longueur_fenetre-mes_label->geometry().width(), largeur_fenetre-(barre_menu->geometry().height()+50));
 
 
 }
@@ -341,7 +339,7 @@ void Projet::changer_couleur(){
 void Projet::couleur_choisie(QColor nouvelle_couleur){
     couleur->setStyleSheet("background-color:" + nouvelle_couleur.name() + ";");
     dessin_courant->set_color(nouvelle_couleur);
-    couleur_courante=nouvelle_couleur;
+    couleur_courante = nouvelle_couleur;
 }
 
 void Projet::changer_taille_crayon(){
@@ -369,9 +367,9 @@ void Projet::importer_images(){
     QStringList liste_dessin = chemin_dessin.entryList();
 
     for(int i = 0; i < liste_images_film.size(); i++){
+        QListWidgetItem *un_objet = new QListWidgetItem(mes_label);
 
         ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString(), i);
-        connect(image, SIGNAL(clicked(std::string,std::string, int)), this, SLOT(afficher(std::string, std::string, int)));
         QString nom = liste_images_film.at(i);
         nom = nom.replace(0, 5, "calque");
         if(liste_dessin.contains( nom)){
@@ -379,8 +377,11 @@ void Projet::importer_images(){
             numero_derniere_image = i+1;
         }
 
-        layout_zone_images->addWidget(image);
+        mes_label->addItem(un_objet);
+        un_objet->setSizeHint(QSize(image->width(), image->height()+5));
+        mes_label->setItemWidget(un_objet, image);
         mes_images.push_back(image);
+
     }
 }
 
@@ -403,6 +404,10 @@ void Projet::afficher(std::string path_image_film, std::string path_dessin, int 
 
     zone_de_travail->setWidget(dessin_courant);
     dessin_courant->set_color(couleur_courante);
+    if(!afficher_dessin->isChecked()){
+        dessin_courant->setVisible(false);
+    }
+
 }
 
 void Projet::save(){
@@ -428,15 +433,21 @@ void Projet::save(){
 }
 
 void Projet::image_suivante(){
+   // save();
     if(current_index < mes_images.size()-1){
         current_index++;
+        mes_label->setCurrentRow(current_index);
+
         afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
     }
 }
 
 void Projet::image_precedente(){
+   // save();
     if(current_index>0){
         current_index--;
+        mes_label->setCurrentRow(current_index);
+
         afficher(mes_images.at(current_index)->get_path_image_film(), mes_images.at(current_index)->get_path_dessin(), current_index);
     }
 }
@@ -521,7 +532,6 @@ void Projet::undo(){
 }
 
 void Projet::creation_previsualisation_rapide(){
-
     QDir chemin_video(dossier_projet + "/videos");
     QDir chemin_dessins(dossier_projet + "/dessins");
     std::string nb_zero = boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(mes_images.size()).length());
@@ -646,4 +656,8 @@ QString Projet::creer_ma_video(){
     std::string str = "ffmpeg -y -f image2 -r " + frequence_video.toStdString() + " -i " + path_a_utiliser + nb_zero + "d.png -vcodec mpeg4 " + chemin_video.path().toStdString() + "/ma_video.avi";
     system(str.c_str());
     return chemin_video.path();
+}
+
+void Projet::test(QModelIndex index){
+    afficher(mes_images.at(index.row())->get_path_image_film(), mes_images.at(index.row())->get_path_dessin(), index.row());
 }
