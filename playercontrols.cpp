@@ -23,7 +23,7 @@ PlayerControls::PlayerControls(QWidget *parent): QWidget(parent), playerState(QM
 
     replayButton = new QToolButton(this);
     replayButton->setEnabled(true);
-    QPixmap image_replay("../DaddyWhereIsMyHorse/replay.png");
+    QPixmap image_replay(":/rsc/img/replay.png");
     QIcon icone_replay(image_replay);
     replayButton->setIcon(icone_replay);
     replayButton->setDown(choix_replay);

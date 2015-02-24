@@ -14,7 +14,7 @@ Dessin::Dessin(int longueur, int largeur, QWidget * parent):QLabel(parent), dess
     setStyleSheet("background: transparent");
     setPixmap(dessin);
 
-    path_souris = "../DaddyWhereIsMyHorse/crayon.png";
+    path_souris = ":/rsc/img/crayon.png";
     QPixmap crayon_souris(path_souris.c_str());
     image_souris = crayon_souris.scaledToWidth(15);
     curseur = QCursor(image_souris, 0, 15);
@@ -96,10 +96,10 @@ void Dessin::changer_taille_crayon(int nouvelle_taille){
 void Dessin::set_utiliser_crayon(bool choix){
     utiliser_crayon = choix;
     if(choix){
-        path_souris = "../DaddyWhereIsMyHorse/crayon.png";
+        path_souris = ":/rsc/img/crayon.png";
     }
     else{
-        path_souris = "../DaddyWhereIsMyHorse/gomme.png";
+        path_souris = ":/rsc/img/gomme.png";
     }
 
     QPixmap crayon_souris(path_souris.c_str());

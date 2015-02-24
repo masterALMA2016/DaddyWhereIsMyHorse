@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/rsc">
+        <file>img/undo.png</file>
+        <file>img/sauvegarder.png</file>
+        <file>img/replay.png</file>
+        <file>img/oeil.png</file>
+        <file>img/lecture.png</file>
+        <file>img/gomme.png</file>
+        <file>img/fleche_gauche.png</file>
+        <file>img/fleche_droite.png</file>
+        <file>img/crayon.png</file>
+    </qresource>
+</RCC>

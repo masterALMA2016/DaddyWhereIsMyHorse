@@ -14,7 +14,7 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     message_accueil->setStyleSheet("font: 40pt");
     message_accueil->setGeometry(QRect(420, 300, 480, 80));
 
-    QPixmap image("../DaddyWhereIsMyHorse/lecture.png");
+    QPixmap image(":/rsc/img/lecture.png");
     image = image.scaledToWidth(20);
     QIcon icone_bouton(image);
 

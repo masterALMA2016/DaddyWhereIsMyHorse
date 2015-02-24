@@ -81,7 +81,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     QPushButton *previsualisation = new QPushButton(this);
     previsualisation->setGeometry(longueur_fenetre - 560, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_oeil("../DaddyWhereIsMyHorse/oeil.png");
+    QPixmap image_oeil(":/rsc/img/oeil.png");
     image_oeil = image_oeil.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_oeil(image_oeil);
     previsualisation->setIcon(icone_oeil);
@@ -90,7 +90,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     QPushButton *precedent = new QPushButton(this);
     precedent->setGeometry(longueur_fenetre - 500, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_precedent("../DaddyWhereIsMyHorse/fleche_gauche.png");
+    QPixmap image_precedent(":/rsc/img/fleche_gauche.png");
     image_precedent = image_precedent.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_precedent(image_precedent);
     precedent->setIcon(icone_precedent);
@@ -100,7 +100,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     QPushButton *suivant = new QPushButton(this);
     suivant->setGeometry(longueur_fenetre - 440, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_suivant("../DaddyWhereIsMyHorse/fleche_droite.png");
+    QPixmap image_suivant(":/rsc/img/fleche_droite.png");
     image_suivant = image_suivant.scaledToWidth(40, Qt::FastTransformation);
     QIcon icone_suivant(image_suivant);
     suivant->setIcon(icone_suivant);
@@ -110,7 +110,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     QPushButton *sauvegarder = new QPushButton(this);
     sauvegarder->setGeometry(longueur_fenetre - 380, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_sauvegarder("../DaddyWhereIsMyHorse/sauvegarder.png");
+    QPixmap image_sauvegarder(":/rsc/img/sauvegarder.png");
     image_sauvegarder = image_sauvegarder.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_sauvegarder(image_sauvegarder);
     sauvegarder->setIcon(icone_sauvegarder);
@@ -118,7 +118,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     QPushButton *undo = new QPushButton(this);
     undo->setGeometry(longueur_fenetre - 320, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_undo("../DaddyWhereIsMyHorse/undo.png");
+    QPixmap image_undo(":/rsc/img/undo.png");
     image_undo = image_undo.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_undo(image_undo);
     undo->setIcon(icone_undo);
@@ -134,7 +134,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     //pour utiliser le crayon
     QPushButton *crayon = new QPushButton(this);
     crayon->setGeometry(longueur_fenetre - 200, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_crayon("../DaddyWhereIsMyHorse/crayon.png");
+    QPixmap image_crayon(":/rsc/img/crayon.png");
     image_crayon = image_crayon.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_crayon(image_crayon);
     crayon->setIcon(icone_crayon);
@@ -144,7 +144,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     //pour utiliser la gomme
     QPushButton *gomme = new QPushButton(this);
     gomme->setGeometry(longueur_fenetre - 140, barre_menu->geometry().height(), 50, 40);
-    QPixmap image_gomme("../DaddyWhereIsMyHorse/gomme.png");
+    QPixmap image_gomme(":/rsc/img/gomme.png");
     image_gomme = image_gomme.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_gomme(image_gomme);
     gomme->setIcon(icone_gomme);

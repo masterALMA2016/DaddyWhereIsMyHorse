@@ -41,3 +41,6 @@ HEADERS  += \
 FORMS    +=
 
 DISTFILES +=
+
+RESOURCES += \
+    ressources.qrc
