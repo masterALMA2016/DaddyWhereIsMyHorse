@@ -9,5 +9,8 @@
         <file>img/fleche_gauche.png</file>
         <file>img/fleche_droite.png</file>
         <file>img/crayon.png</file>
+        <file>img/calque.png</file>
+        <file>img/film.png</file>
+        <file>img/dessin.png</file>
     </qresource>
 </RCC>

@@ -39,9 +39,12 @@ private:
 
     QPixmap image_souris;
     QCursor curseur;
+
     QPushButton *charger_projet;
     QPushButton *nouveau_projet;
 
+    Projet *projet;
+    CreationProjet *cp;
 };
 
 #endif // ACCUEIL_H

@@ -40,7 +40,8 @@ HEADERS  += \
 
 FORMS    +=
 
-DISTFILES +=
+DISTFILES += \
+    img/film.png
 
 RESOURCES += \
     ressources.qrc

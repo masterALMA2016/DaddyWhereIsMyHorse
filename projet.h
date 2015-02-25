@@ -67,7 +67,7 @@ public slots:
     void apercu_video();
     void exporter_video();
     void exporter_les_dessins();
-    void test(QModelIndex index);
+    void changer_index(QModelIndex index);
 
 private:
 
@@ -98,10 +98,11 @@ private:
     QColor couleur_courante;
     QComboBox *choix_taille_crayon;
     QPushButton *couleur;
-
-    QCheckBox *afficher_pelures_doigons;
-    QCheckBox *afficher_dessin;
-    QCheckBox *afficher_image;
+    bool gomme;
+    bool afficher_pelure_down;
+    QToolButton *afficher_pelures_doigons;
+    QToolButton *afficher_dessin;
+    QToolButton *afficher_image;
 
     QScrollArea *scrollarea_zone_images;
 

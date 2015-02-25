@@ -58,6 +58,7 @@ Player::Player(QString chemin_video, QWidget *parent): QWidget(parent), videoWid
 
 Player::~Player()
 {
+    std::cout<<"play"<<std::endl;
 }
 
 

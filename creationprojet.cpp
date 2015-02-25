@@ -130,7 +130,6 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 
   connect(parcourir_projet, SIGNAL(clicked()), this, SLOT(parcourir_dossier()));
   connect(parcourir, SIGNAL(clicked()), this, SLOT(parcourir_video()));
-
 }
 
 CreationProjet::~CreationProjet()
@@ -142,6 +141,8 @@ CreationProjet::~CreationProjet()
     delete(probleme_chemin_projet);
     delete(probleme_nom_projet);
     delete(probleme_chemin_video);
+    std::cout<<"jjjj"<<std::endl;
+
 }
 
 void CreationProjet::envoyer_informations(){

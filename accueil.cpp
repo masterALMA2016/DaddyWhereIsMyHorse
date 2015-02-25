@@ -2,8 +2,8 @@
 
 Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 {
-    longueur_fenetre = 1245;
-    largeur_fenetre = 800;
+    longueur_fenetre = 1120;
+    largeur_fenetre = 794;
 
     this->setWindowTitle("Accueil");
     this->setMinimumSize(longueur_fenetre,largeur_fenetre);
@@ -41,7 +41,6 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
 
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
-
 }
 
 Accueil::~Accueil()
@@ -54,14 +53,13 @@ Accueil::~Accueil()
 
 void Accueil::creer_projet(){
 
-    CreationProjet *cp = new CreationProjet(this);
+    cp = new CreationProjet(this);
     connect(cp, SIGNAL(information_projet(QString, QString)), this, SLOT(recuperer_informations(QString, QString )));
     cp->show();
 }
 
 void Accueil::ouvrir_projet(){
 
-    //QString path = QFileDialog::getExistingDirectory(this, tr("Open Directoriy"), QDir::home().path(), QFileDialog::ShowDirsOnly);
     QFileDialog *test = new QFileDialog(this, QDir::home().path());
     QString path = test->getExistingDirectory();
     QFile file(path + "/dwimh.conf");
@@ -78,7 +76,7 @@ void Accueil::ouvrir_projet(){
         QString frequence_pelures_doignons = flux.readLine();
         QString nb_previsualisation = flux.readLine();
         QString afficher_image_fond = flux.readLine();
-        Projet *projet = new Projet(longueur_fenetre, largeur_fenetre, frequence_video, nb_pelures_doignons.toInt(), frequence_pelures_doignons.toInt(), nb_previsualisation.toInt(),  afficher_image_fond.toInt(), path);
+        projet = new Projet(longueur_fenetre, largeur_fenetre, frequence_video, nb_pelures_doignons.toInt(), frequence_pelures_doignons.toInt(), nb_previsualisation.toInt(),  afficher_image_fond.toInt(), path);
         projet->show();
         this->close();
     }

@@ -5,6 +5,7 @@
 Dessin::Dessin(int longueur, int largeur, QWidget * parent):QLabel(parent), dessin(longueur, largeur), crayon(Qt::blue)
 {
 
+    sauvegarder = false;
     dessin.fill(Qt::transparent);
     crayon.setCapStyle(Qt::RoundCap);
 
@@ -27,8 +28,9 @@ Dessin::~Dessin()
 }
 
 void Dessin::mousePressEvent ( QMouseEvent * event ){
+        sauvegarder = true;
 
-        historique.clear();
+        ancien = dessin;
 
         QPainter paint(&dessin);
 
@@ -43,9 +45,6 @@ void Dessin::mousePressEvent ( QMouseEvent * event ){
         tracer_ligne = true;
         paint.drawPoint(event->x(), event->y());
         setPixmap(dessin);
-
-        Histo point(x, y, 0, 0, crayon.width(), true);
-        historique.push_back(point);
 }
 
 void Dessin::mouseMoveEvent( QMouseEvent * event ){
@@ -61,9 +60,6 @@ void Dessin::mouseMoveEvent( QMouseEvent * event ){
     paint.setPen(crayon);
     paint.drawLine(x, y, event->x(), event->y());
     paint.end();
-
-    Histo ligne(x, y, event->x(), event->y(), crayon.width(), false);
-    historique.push_back(ligne);
 
     x = event->x();
     y = event->y();
@@ -109,7 +105,9 @@ void Dessin::set_utiliser_crayon(bool choix){
     setCursor(curseur);
 }
 
-void Dessin::save(QString chemin_dessin, QString chemin_calque, std::string chemin_image_film, std::string chemin_dessin_film){
+void Dessin::save(QString dossier, QString chemin_dessin, QString chemin_calque, std::string chemin_image_film, std::string chemin_dessin_film){
+    sauvegarder = false;
+
     QPixmap temp(dessin.width(), dessin.height());
     temp.fill(Qt::white);
     QPainter paint(&temp);
@@ -132,37 +130,16 @@ void Dessin::set_dessin(QPixmap image){
     setPixmap(dessin);
 }
 
-void Dessin::undo(){
-    for(int i = 0; i<historique.size(); i++){
-        if(historique.at(i).is_point()){
-            QPainter paint(&dessin);
-            QPen crayon_temp(Qt::transparent);
-            crayon_temp.setWidth(historique.at(i).get_taille());
-            crayon_temp.setColor(Qt::transparent);
-            crayon_temp.setCapStyle(Qt::RoundCap);
-
-            paint.setCompositionMode(QPainter::CompositionMode_SourceIn);
-
-
-            paint.setPen(crayon_temp);
-            paint.drawPoint(historique.at(i).get_x(), historique.at(i).get_y());
-            setPixmap(dessin);
-        }
-        else{
-
-            QPainter paint(&dessin);
-            QPen crayon_temp(Qt::transparent);
-            crayon_temp.setWidth(historique.at(i).get_taille());
-            crayon_temp.setColor(Qt::transparent);
-            crayon_temp.setCapStyle(Qt::RoundCap);
-
-            paint.setCompositionMode(QPainter::CompositionMode_SourceIn);
-            paint.setPen(crayon_temp);
-
-            paint.drawLine(historique.at(i).get_x(), historique.at(i).get_y(), historique.at(i).get_xx(), historique.at(i).get_yy());
-
-            setPixmap(dessin);
-        }
+void Dessin::undo(QString dossier){
+    sauvegarder = true;
+    if(!ancien.isNull()){
+        dessin = ancien;
+        setPixmap(dessin);
+        ancien = QPixmap();
     }
-    historique.clear();
+
+}
+
+bool Dessin::to_save(){
+    return sauvegarder;
 }

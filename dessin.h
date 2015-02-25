@@ -20,8 +20,9 @@ public:
     void set_utiliser_crayon(bool choix);
     void set_dessin(QPixmap image);
     void changer_taille_crayon(int nouvelle_taille);
-    void save(QString chemin_dessin, QString chemin_calque, std::string chemin_image_film, std::string chemin_dessin_film);
-    void undo();
+    void save(QString dossier, QString chemin_dessin, QString chemin_calque, std::string chemin_image_film, std::string chemin_dessin_film);
+    void undo(QString dossier);
+    bool to_save();
 
 protected:
     void mousePressEvent(QMouseEvent * event);
@@ -29,17 +30,17 @@ protected:
     void mouseReleaseEvent();
 
 private:
-    QPen crayon;
     QPixmap dessin;
+    QPixmap ancien;
+    QPen crayon;
     QCursor curseur;
     QPixmap image_souris;
 
     std::string path_souris;
 
+    bool sauvegarder;
     bool tracer_ligne;
     bool utiliser_crayon;
-
-    std::vector<Histo> historique;
 
     int x;
     int y;
