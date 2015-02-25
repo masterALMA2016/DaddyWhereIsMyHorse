@@ -36,6 +36,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     connect(mes_label, SIGNAL(clicked(QModelIndex)), this, SLOT(changer_index(QModelIndex)));
 
     mes_label->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
+    mes_label->setStyleSheet("QListWidget::item {border-bottom: 1px solid black;}");
 
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
@@ -264,7 +265,7 @@ void Projet::creation_menu(){
     connect(apercu, SIGNAL(triggered()), this, SLOT(apercu_video()));
 
     //menu edition
-    QMenu *edition = new QMenu("Edition");
+    QMenu *edition = new QMenu("Édition");
     barre_menu->addMenu(edition);
 
     QAction *preference = new QAction(this);
@@ -398,10 +399,6 @@ void Projet::importer_images(){
         QListWidgetItem *un_objet = new QListWidgetItem(mes_label);
         ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString(), i);
         QString nom = liste_images_film.at(i);
-
-        QVBoxLayout *vb = new QVBoxLayout(image);
-        vb->setAlignment(Qt::AlignCenter);
-        image->setLayout(vb);
 
         nom = nom.replace(0, 5, "calque");
         if(liste_dessin.contains( nom)){
