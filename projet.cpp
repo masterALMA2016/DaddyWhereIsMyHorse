@@ -67,6 +67,8 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     afficher_image = new QToolButton(this);
     afficher_image->setEnabled(true);
+    afficher_image->setToolTip("Afficher les image de la vidéo");
+
     afficher_image->setGeometry(mes_label->width() + 10, barre_menu->geometry().height(), 50, 40);
     afficher_image->setChecked(true);
     QPixmap image_image(":/rsc/img/film.png");
@@ -79,6 +81,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     afficher_dessin = new QToolButton(this);
     afficher_dessin->setEnabled(true);
+    afficher_dessin->setToolTip("Afficher les dessins");
     QPixmap image_dessin(":/rsc/img/dessin.png");
     image_dessin = image_dessin.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_dessin(image_dessin);
@@ -90,6 +93,8 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     afficher_pelures_doigons = new QToolButton(this);
     afficher_pelures_doigons->setEnabled(true);
+    afficher_pelures_doigons->setToolTip("Afficher les pelures d'oignon");
+
     QPixmap image_calque(":/rsc/img/calque.png");
     image_calque = image_calque.scaledToWidth(35, Qt::FastTransformation);
     QIcon icone_calque(image_calque);
@@ -496,9 +501,6 @@ void Projet::changer_affichage_image(){
     for(unsigned int i = 0; i<mes_images.size(); i++){
         mes_images.at(i)->set_affichage_image(!image_fond->isVisible());
     }
-    if(image_fond->isVisible()!=afficher_image->isChecked()){
-        afficher_image->setChecked(!afficher_image->isChecked());
-    }
 }
 
 void Projet::changer_affichage_dessin(){
@@ -508,9 +510,7 @@ void Projet::changer_affichage_dessin(){
     for(unsigned int i = 0; i<mes_images.size(); i++){
         mes_images.at(i)->set_affichage_dessin(dessin_courant->isVisible());
     }
-    if(dessin_courant->isVisible()!=afficher_dessin->isChecked()){
-        afficher_dessin->setChecked(!afficher_dessin->isChecked());
-    }
+
 }
 
 void Projet::affichage_pelures_doigons(){

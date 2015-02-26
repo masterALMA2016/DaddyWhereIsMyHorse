@@ -5,7 +5,6 @@
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
-#include "histo.h"
 
 class Dessin: public QLabel
 {

@@ -12,20 +12,20 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     message_accueil = new QLabel(this);
     message_accueil->setText("Pas de projet ouvert");
     message_accueil->setStyleSheet("font: 40pt");
-    message_accueil->setGeometry(QRect(420, 300, 480, 80));
+    message_accueil->setGeometry(QRect(350, 250, 480, 80));
 
     QPixmap image(":/rsc/img/lecture.png");
     image = image.scaledToWidth(20);
     QIcon icone_bouton(image);
 
     nouveau_projet = new QPushButton("Nouveau projet", this);
-    nouveau_projet->setGeometry(530, 400, 250, 50);
+    nouveau_projet->setGeometry(470, 350, 250, 50);
     nouveau_projet->setStyleSheet("font: 15pt");
     nouveau_projet->setIcon(icone_bouton);
     nouveau_projet->setIconSize(image.rect().size());
 
     charger_projet = new QPushButton("Charger projet", this);
-    charger_projet->setGeometry(530, 500, 250, 50);
+    charger_projet->setGeometry(470, 450, 250, 50);
     charger_projet->setStyleSheet("font: 15pt");
     charger_projet->setIcon(icone_bouton);
     charger_projet->setIconSize(image.rect().size());
@@ -37,7 +37,7 @@ Accueil::Accueil(QWidget *parent):QMainWindow(parent)
     probleme_ouverture_projet->setText(QString::fromUtf8("Ce répertoire ne correspond pas à un projet DaddyWhereIsMyHorse"));
     probleme_ouverture_projet->setPalette(couleur_texte);
     probleme_ouverture_projet->setVisible(false);
-    probleme_ouverture_projet->setGeometry(450, 570, 500, 25);
+    probleme_ouverture_projet->setGeometry(390, 520, 500, 25);
 
     connect(nouveau_projet, SIGNAL(clicked()), this, SLOT(creer_projet()));
     connect(charger_projet, SIGNAL(clicked()), this, SLOT(ouvrir_projet()));
