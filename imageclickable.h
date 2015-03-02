@@ -8,7 +8,7 @@ class ImageClickable: public QLabel
     Q_OBJECT
 
 public:
-    explicit ImageClickable(std::string nouveau_path_image_film, int index, QWidget * parent = 0);
+    explicit ImageClickable(std::string nouveau_path_image_film, QWidget * parent = 0);
     ~ImageClickable();
     std::string get_path_image_film();
     std::string get_path_dessin();
@@ -20,7 +20,6 @@ public:
 private:
     std::string path_image_film;
     std::string path_dessin;
-    int index;
 };
 
 #endif // IMAGECLICKABLE_H

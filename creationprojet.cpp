@@ -5,35 +5,35 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 {
 
   setWindowTitle("Nouveau Projet");
-  setMinimumSize(830,520);
-  setMaximumSize(830, 520);
+  setMinimumSize(747,468);
+  setMaximumSize(747, 468);
 
   QLabel *titre = new QLabel(this);
   titre->setText("Nouveau Projet");
-  titre->setGeometry(300, 0, 350, 60);
+  titre->setGeometry(250, 0, 350, 60);
   titre->setStyleSheet("font: 30pt");
 
   //Selection du film
   QLabel *film_source_titre = new QLabel(this);
   film_source_titre->setText("Film source");
   film_source_titre->setStyleSheet("font: 20pt");
-  film_source_titre->setGeometry(20, 100, 150, 25);
+  film_source_titre->setGeometry(20, 90, 150, 25);
 
   QLabel *emplacement_film = new QLabel(this);
   emplacement_film->setText("Emplacement: ");
-  emplacement_film->setGeometry(20, 140, 100, 25);
+  emplacement_film->setGeometry(20, 130, 100, 25);
 
   chemin_video = new QLineEdit(this);
-  chemin_video->setGeometry(130,140,200,25);
+  chemin_video->setGeometry(130,130,200,25);
 
   QPushButton *parcourir = new QPushButton(this);
   parcourir->setText("Parcourir");
-  parcourir->setGeometry(340, 140, 80, 25);
+  parcourir->setGeometry(340, 130, 80, 25);
 
   probleme_chemin_video = new QLabel(this);
   probleme_chemin_video->setText("Ce répertoire n'existe pas");
   probleme_chemin_video->setVisible(false);
-  probleme_chemin_video->setGeometry(430,140,170,25);
+  probleme_chemin_video->setGeometry(430,130,170,25);
   QPalette couleur_texte;
   couleur_texte.setColor(QPalette::WindowText, Qt::red);
   probleme_chemin_video->setPalette(couleur_texte);
@@ -58,39 +58,39 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   QLabel *projet_titre = new QLabel(this);
   projet_titre->setText("Projet");
   projet_titre->setStyleSheet("font: 20pt");
-  projet_titre->setGeometry(20, 200, 150, 35);
+  projet_titre->setGeometry(20, 190, 150, 35);
 
   QLabel *nom_projet_titre = new QLabel(this);
   nom_projet_titre->setText("Nom: ");
-  nom_projet_titre->setGeometry(20, 240, 100, 25);
+  nom_projet_titre->setGeometry(20, 230, 100, 25);
 
   nom_projet = new QLineEdit(this);
-  nom_projet->setGeometry(130,240,200,25);
+  nom_projet->setGeometry(130,230,200,25);
   nom_projet->setText(dossier);
 
   probleme_nom_projet = new QLabel(this);
   probleme_nom_projet->setText("Ce répertoire existe déjà");
   probleme_nom_projet->setVisible(false);
-  probleme_nom_projet->setGeometry(340,240,170,25);
+  probleme_nom_projet->setGeometry(340,230,170,25);
   couleur_texte.setColor(QPalette::WindowText, Qt::red);
   probleme_nom_projet->setPalette(couleur_texte);
 
   QLabel *emplacement_projet_titre = new QLabel(this);
   emplacement_projet_titre->setText("Emplacement: ");
-  emplacement_projet_titre->setGeometry(20, 275, 100, 25);
+  emplacement_projet_titre->setGeometry(20, 265, 100, 25);
 
   chemin_projet = new QLineEdit(this);
-  chemin_projet->setGeometry(130,275,200,25);
+  chemin_projet->setGeometry(130,265,200,25);
   chemin_projet->setText(home.path());
 
   QPushButton *parcourir_projet = new QPushButton(this);
   parcourir_projet->setText("Parcourir");
-  parcourir_projet->setGeometry(340, 275, 80, 25);
+  parcourir_projet->setGeometry(340, 265, 80, 25);
 
   probleme_chemin_projet = new QLabel(this);
   probleme_chemin_projet->setText("Ce répertoire n'existe pas");
   probleme_chemin_projet->setVisible(false);
-  probleme_chemin_projet->setGeometry(430,275,170,25);
+  probleme_chemin_projet->setGeometry(430,265,170,25);
   couleur_texte.setColor(QPalette::WindowText, Qt::red);
   probleme_chemin_projet->setPalette(couleur_texte);
 
@@ -99,14 +99,14 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
   QLabel *option_titre = new QLabel(this);
   option_titre->setText("Option");
   option_titre->setStyleSheet("font: 20pt");
-  option_titre->setGeometry(20, 335, 150, 35);
+  option_titre->setGeometry(20, 325, 150, 35);
 
   QLabel *frequence = new QLabel(this);
   frequence->setText("Fréquence: ");
-  frequence->setGeometry(20, 375, 100, 25);
+  frequence->setGeometry(20, 365, 100, 25);
 
   choix_frequence = new QComboBox(this);
-  choix_frequence->setGeometry(130, 375, 45, 25);
+  choix_frequence->setGeometry(130, 365, 45, 25);
   choix_frequence->addItem(QString::fromUtf8("6"));
   choix_frequence->addItem(QString::fromUtf8("8"));
   choix_frequence->addItem(QString::fromUtf8("12"));
@@ -114,18 +114,18 @@ CreationProjet::CreationProjet(QWidget * parent):QDialog(parent)
 
   QLabel *texte_frequence = new QLabel(this);
   texte_frequence->setText("images par seconde");
-  texte_frequence->setGeometry(180, 375, 200, 25);
+  texte_frequence->setGeometry(180, 365, 200, 25);
 
 
   //boutons
   QPushButton *annuler = new QPushButton(this);
   annuler->setText(QString::fromUtf8("Annuler"));
-  annuler->setGeometry(10, 470, 100, 40);
+  annuler->setGeometry(10, 423, 100, 40);
   connect(annuler, SIGNAL(clicked()), this, SLOT(close()));
 
   QPushButton *creer = new QPushButton(this);
-  creer->setText(QString::fromUtf8("Creer"));
-  creer->setGeometry(720, 470, 100, 40);
+  creer->setText(QString::fromUtf8("Créer"));
+  creer->setGeometry(637, 423, 100, 40);
   connect(creer, SIGNAL(clicked()), this, SLOT(envoyer_informations()));
 
   connect(parcourir_projet, SIGNAL(clicked()), this, SLOT(parcourir_dossier()));
@@ -188,6 +188,7 @@ void CreationProjet::envoyer_informations(){
         dir_projet.mkdir("images_video");
         dir_projet.mkdir("dessins");
         dir_projet.mkdir("calque");
+        dir_projet.mkdir("dessin_image_film");
         dir_projet.mkdir("videos");
         dir_projet.cd("images_video");
         std::string str = "ffmpeg -i " + chemin_video->text().toStdString()+" -r " + choix_frequence->currentText().toStdString() + " " + dir_projet.path().toStdString() + "/image%03d.png";

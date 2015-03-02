@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     creationprojet.cpp \
     player.cpp \
     playercontrols.cpp \
-    videowidget.cpp \
     preferences.cpp \
     erreur.cpp
 
@@ -32,7 +31,6 @@ HEADERS  += \
     creationprojet.h \
     player.h \
     playercontrols.h \
-    videowidget.h \
     preferences.h \
     erreur.h
 

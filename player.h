@@ -40,7 +40,7 @@ private:
     void updateDurationInfo(qint64 currentInfo);
 
     QMediaPlayer *player;
-    VideoWidget *videoWidget;
+    QVideoWidget *videoWidget;
     QSlider *slider;
     QLabel *labelDuration;
     qint64 duration;

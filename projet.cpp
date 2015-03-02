@@ -36,7 +36,6 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
     connect(mes_label, SIGNAL(clicked(QModelIndex)), this, SLOT(changer_index(QModelIndex)));
 
     mes_label->setGeometry(0, barre_menu->geometry().y()+barre_menu->height(), 205, largeur_fenetre-barre_menu->geometry().height());
-    mes_label->setStyleSheet("QListWidget::item {border-bottom: 1px solid black;}");
 
     image_fond = new QLabel(this);
     image_fond->setAlignment(Qt::AlignCenter);
@@ -68,7 +67,7 @@ Projet::Projet(int x, int y, QString frequence, int nb_pelures_doignons, int new
 
     afficher_image = new QToolButton(this);
     afficher_image->setEnabled(true);
-    afficher_image->setToolTip("Afficher les image de la vidéo");
+    afficher_image->setToolTip("Afficher les images de la vidéo");
 
     afficher_image->setGeometry(mes_label->width() + 10, barre_menu->geometry().height(), 50, 40);
     afficher_image->setChecked(true);
@@ -402,7 +401,7 @@ void Projet::importer_images(){
 
     for(int i = 0; i < liste_images_film.size(); i++){
         QListWidgetItem *un_objet = new QListWidgetItem(mes_label);
-        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString(), i);
+        ImageClickable *image = new ImageClickable(chemin_image.path().toStdString() + "/" + liste_images_film.at(i).toStdString());
         QString nom = liste_images_film.at(i);
 
         nom = nom.replace(0, 5, "calque");

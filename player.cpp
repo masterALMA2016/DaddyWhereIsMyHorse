@@ -10,8 +10,19 @@ Player::Player(QString chemin_video, QWidget *parent): QWidget(parent), videoWid
     connect(player, SIGNAL(durationChanged(qint64)), SLOT(durationChanged(qint64)));
     connect(player, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
 
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    videoWidget = new VideoWidget(this);
+
+
+    videoWidget = new QVideoWidget(this);
+
+    QPalette p = palette();
+    p.setColor(QPalette::Window, Qt::black);
+    videoWidget->setPalette(p);
+
+    videoWidget->setAttribute(Qt::WA_OpaquePaintEvent);
+
+
     player->setVideoOutput(videoWidget);
 
     slider = new QSlider(Qt::Horizontal, this);

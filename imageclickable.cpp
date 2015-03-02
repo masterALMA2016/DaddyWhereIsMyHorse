@@ -1,8 +1,7 @@
 #include "imageclickable.h"
 #include <iostream>
-ImageClickable::ImageClickable(std::string nouveau_path_image_film, int index, QWidget *parent):QLabel(parent)
+ImageClickable::ImageClickable(std::string nouveau_path_image_film, QWidget *parent):QLabel(parent)
 {
-    this->index = index;
     path_image_film = nouveau_path_image_film;
     path_dessin = "";
     QPixmap image_film_temp(nouveau_path_image_film.c_str());
@@ -16,8 +15,6 @@ ImageClickable::ImageClickable(std::string nouveau_path_image_film, int index, Q
 
 ImageClickable::~ImageClickable()
 {
-    std::cout<<"img"<<std::endl;
-
 }
 
 std::string ImageClickable::get_path_image_film(){
